@@ -66,7 +66,7 @@ func NewBlog(settingsFile string) (*Blog, error) {
 	if err != nil {
 		fmt.Printf("No info.json generated: %v\n", err)
 		lastModifiedParseIsSuccess = false
-		b.CreateInfoJSON()
+		b.WriteInfoJSON()
 	} else {
 		err = json.Unmarshal(publicJSON, &c)
 		if err != nil {
@@ -179,7 +179,7 @@ type omit *struct{}
 // Creates an info.json to be placed in the public dir
 // This info.json is part of the blog's public API, and
 // is where the LastModified timestamp is taken from
-func (b *Blog) CreateInfoJSON() {
+func (b *Blog) WriteInfoJSON() {
 	toWrite, _ := json.Marshal(struct {
 		*Blog
 		InDir     omit `json:"in_dir,omitempty"`
