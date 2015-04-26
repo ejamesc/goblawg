@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -111,6 +112,67 @@ func (b *Blog) getPostsWithDraft(drafts bool) []*Post {
 	return ps
 }
 
+// Save a blog post and write to disk
+func (b *Blog) SavePost(post *Post) error {
+	filename := constructFilename(post)
+
+	// Create posts directory if not exists
+	postsDir := path.Join(b.InDir, "posts")
+	_, err := ioutil.ReadDir(postsDir)
+	if err != nil {
+		os.Mkdir(postsDir, 0775)
+	}
+
+	filepath := path.Join(postsDir, filename)
+	jsn, err := json.MarshalIndent(post, "", "  ")
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(filepath, jsn, 0776)
+	if err != nil {
+		fmt.Printf("Unable to write post: %v\n", err)
+		return err
+	}
+
+	b.Posts = append(b.Posts, post)
+	return nil
+}
+
+// Errors from this should be flashed to the user
+func (b *Blog) DeletePost(p *Post) error {
+	deleted := false
+	for i, post := range b.Posts {
+		if post.Link == p.Link {
+			b.Posts = b.Posts[:i+copy(b.Posts[i:], b.Posts[i+1:])]
+			deleted = true
+			break
+		}
+	}
+	if !deleted {
+		return fmt.Errorf("Post did not exist")
+	}
+
+	path := path.Join(b.InDir, "posts", constructFilename(p))
+	err := os.Remove(path)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (b *Blog) EditPost(p *Post) error {
+	err := b.DeletePost(p)
+	if err != nil {
+		return err
+	}
+	err = b.SavePost(p)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Inner type, used to omit fields from JSON marshalling
 type omit *struct{}
 
@@ -201,4 +263,13 @@ func isJSONFile(n string) bool {
 	} else {
 		return false
 	}
+}
+
+func constructFilename(post *Post) string {
+	title := strings.Replace(post.Title, " ", "-", -1)
+	title = strings.ToLower(title)
+	timeString := post.Time.Format(layout)
+	filename := timeString + "-" + title + ".json"
+
+	return filename
 }
