@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"sort"
 	"time"
 )
 
@@ -33,6 +34,7 @@ type Post struct {
 	LastModified time.Time `json:"last_modified"`
 }
 
+// Generator
 func NewBlog(settingsFile string) (*Blog, error) {
 	settingsJSON, err := ioutil.ReadFile(settingsFile)
 	if err != nil {
@@ -54,7 +56,7 @@ func NewBlog(settingsFile string) (*Blog, error) {
 	}
 
 	type timeDecode struct {
-		LastGen string `json:"last_gen"`
+		LastGen time.Time `json:"last_gen"`
 	}
 	var c timeDecode
 	lastModifiedParseIsSuccess := true
@@ -70,12 +72,7 @@ func NewBlog(settingsFile string) (*Blog, error) {
 			fmt.Println("Unmashalling of info.json error: %v\n", err)
 			lastModifiedParseIsSuccess = false
 		}
-		tts, err := time.Parse(layout, c.LastGen)
-		if err != nil {
-			fmt.Printf("Error with parsing lastgen timestamp: %v\n", err)
-			lastModifiedParseIsSuccess = false
-		}
-		b.LastModified = tts
+		b.LastModified = c.LastGen
 	}
 
 	if !lastModifiedParseIsSuccess {
@@ -85,19 +82,59 @@ func NewBlog(settingsFile string) (*Blog, error) {
 	return b, nil
 }
 
+type ByTime []*Post
+
+func (t ByTime) Len() int           { return len(t) }
+func (t ByTime) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
+func (t ByTime) Less(i, j int) bool { return t[i].Time.Before(t[j].Time) }
+
+// Return all published posts, sorted in reverse chronological order
+func (b *Blog) GetPublishedPosts() []*Post {
+	return b.getPostsWithDraft(false)
+}
+
+func (b *Blog) GetAllPosts() []*Post {
+	return b.getPostsWithDraft(true)
+}
+
+// Return all posts, sorted in reverse chronological order
+func (b *Blog) getPostsWithDraft(drafts bool) []*Post {
+	ps := []*Post{}
+	if !drafts {
+		for _, p := range b.Posts {
+			if !p.IsDraft {
+				ps = append(ps, p)
+			}
+		}
+	}
+	sort.Sort(sort.Reverse(ByTime(ps)))
+	return ps
+}
+
+// Inner type, used to omit fields from JSON marshalling
+type omit *struct{}
+
 // Creates an info.json to be placed in the public dir
+// This info.json is part of the blog's public API, and
+// is where the LastModified timestamp is taken from
 func (b *Blog) CreateInfoJSON() {
-	lmt := b.LastModified.Format(layout)
-	type omit *struct{}
 	toWrite, _ := json.Marshal(struct {
 		*Blog
-		InDir        omit   `json:"in_dir,omitempty"`
-		OutDir       omit   `json:"out_dir,omitempty"`
-		StaticDir    omit   `json:"static_dir,omitempty"`
-		Posts        omit   `json:"posts,omitempty"`
-		LastModified string `json:"last_modified"`
-	}{Blog: b, LastModified: lmt})
+		InDir     omit `json:"in_dir,omitempty"`
+		OutDir    omit `json:"out_dir,omitempty"`
+		StaticDir omit `json:"static_dir,omitempty"`
+		Posts     omit `json:"posts,omitempty"`
+	}{Blog: b})
 	_ = ioutil.WriteFile(path.Join(b.OutDir, "info.json"), toWrite, 0775)
+}
+
+func (b *Blog) GetPostByLink(link string) *Post {
+	for _, p := range b.Posts {
+		if p.Link == link {
+			return p
+		}
+	}
+	return nil
 }
 
 /* Helpers */
@@ -106,40 +143,52 @@ func loadPostsFromDir(dir string) ([]*Post, error) {
 	if os.IsNotExist(err) {
 		return nil, fmt.Errorf("%v does not exist, yo!", dir)
 	}
+
 	listFileInfo, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
 
-	var markdownFileList []os.FileInfo
+	var jsonFileList []os.FileInfo
 	for _, entry := range listFileInfo {
 		if isJSONFile(entry.Name()) {
-			markdownFileList = append(markdownFileList, entry)
+			jsonFileList = append(jsonFileList, entry)
 		}
 	}
 
-	posts := make([]*Post, len(markdownFileList))
+	posts := []*Post{}
 
-	for i, entry := range markdownFileList {
+	for _, entry := range jsonFileList {
 		fpath := path.Join(dir, entry.Name())
 
-		p, err := newPostFromFile(fpath, entry)
+		p, err := NewPostFromFile(fpath, entry)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("Unable to create post: %v\n", err)
 			continue
 		}
-		posts[i] = p
+		posts = append(posts, p)
 	}
 
 	return posts, nil
 }
 
-func newPostFromFile(path string, fi os.FileInfo) (*Post, error) {
+func NewPostFromFile(path string, fi os.FileInfo) (*Post, error) {
 	if !isJSONFile(path) {
-		return nil, fmt.Errorf("%s does not have a markdown or text file extension", path)
+		return nil, fmt.Errorf("%s does not have a JSON file extension", path)
 	}
 
-	p := &Post{}
+	fc, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var p *Post
+	err = json.Unmarshal(fc, &p)
+
+	if err != nil {
+		fmt.Printf("Unmarshalling error: %v\n", err)
+		return nil, err
+	}
 	p.LastModified = fi.ModTime()
 
 	return p, nil
