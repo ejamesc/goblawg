@@ -30,7 +30,7 @@ type Post struct {
 	Link         string    `json:"link"`
 	Time         time.Time `json:"time"`
 	IsDraft      bool      `json:"is_draft"`
-	LastModified time.Time
+	LastModified time.Time `json:"last_modified"`
 }
 
 func NewBlog(settingsFile string) (*Blog, error) {

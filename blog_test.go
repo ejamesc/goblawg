@@ -43,7 +43,4 @@ func TestNewBlog(t *testing.T) {
 
 	_, err = os.Stat(path.Join(tmpdir, "info.json"))
 	ok(t, err)
-
-	blah, _ := ioutil.ReadFile(path.Join(tmpdir, "info.json"))
-	fmt.Println(string(blah))
 }
