@@ -1,0 +1,10 @@
+{
+  "name": "Eli James", 
+	"link": "http://elijames.org",
+	"description": "The personal site of Cedric Chin, aka Eli James.",
+	"author": "Eli James",
+	"email": "cedric@elijames.org",
+	"out_dir": "public", 
+	"in_dir": "content", 
+  "static_dir": "static"
+}
