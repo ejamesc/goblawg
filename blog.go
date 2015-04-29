@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 	"sort"
@@ -24,6 +25,7 @@ type Blog struct {
 	OutDir       string    `json:"out_dir"`
 	StaticDir    string    `json:"static_dir"`
 	LastModified time.Time `json:"last_modified"`
+	Logger       *log.Logger
 }
 
 type Post struct {
@@ -38,21 +40,24 @@ type Post struct {
 // Generator
 func NewBlog(settingsFile string) (*Blog, error) {
 	settingsJSON, err := ioutil.ReadFile(settingsFile)
+	logger := log.New(os.Stdout, "[goblawg] ", 0)
 	if err != nil {
-		fmt.Printf("Dude, unable to read settings.json: %v\n", err)
+		logger.Printf("Dude, unable to read settings.json: %v\n", err)
 		return nil, err
 	}
 
-	var b *Blog
+	b := &Blog{}
+	b.Logger = logger
+
 	err = json.Unmarshal(settingsJSON, &b)
 	if err != nil {
-		fmt.Printf("Unmarshalling of settings file failed: %v\n", err)
+		logger.Printf("Unmarshalling of settings file failed: %v\n", err)
 		return nil, err
 	}
 
 	b.Posts, err = loadPostsFromDir(path.Join(b.InDir, "posts"))
 	if err != nil {
-		fmt.Printf("Couldn't load posts from %v: %v\n", b.InDir, err)
+		logger.Printf("Couldn't load posts from %v: %v\n", b.InDir, err)
 		b.Posts = []*Post{}
 	}
 
@@ -64,13 +69,13 @@ func NewBlog(settingsFile string) (*Blog, error) {
 
 	publicJSON, err := ioutil.ReadFile(path.Join(b.OutDir, "info.json"))
 	if err != nil {
-		fmt.Printf("No info.json generated: %v\n", err)
+		logger.Printf("No info.json generated: %v\n", err)
 		lastModifiedParseIsSuccess = false
 		b.WriteInfoJSON()
 	} else {
 		err = json.Unmarshal(publicJSON, &c)
 		if err != nil {
-			fmt.Println("Unmashalling of info.json error: %v\n", err)
+			logger.Println("Unmashalling of info.json error: %v\n", err)
 			lastModifiedParseIsSuccess = false
 		}
 		b.LastModified = c.LastGen
@@ -130,7 +135,7 @@ func (b *Blog) SavePost(post *Post) error {
 	}
 	err = ioutil.WriteFile(filepath, jsn, 0776)
 	if err != nil {
-		fmt.Printf("Unable to write post: %v\n", err)
+		b.Logger.Printf("Unable to write post: %v\n", err)
 		return err
 	}
 
@@ -219,16 +224,21 @@ func loadPostsFromDir(dir string) ([]*Post, error) {
 	}
 
 	posts := []*Post{}
+	errors := []error{}
 
 	for _, entry := range jsonFileList {
 		fpath := path.Join(dir, entry.Name())
 
 		p, err := NewPostFromFile(fpath, entry)
 		if err != nil {
-			fmt.Printf("Unable to create post: %v\n", err)
+			errors = append(errors, err)
 			continue
 		}
 		posts = append(posts, p)
+	}
+
+	if len(errors) > 0 {
+		return posts, fmt.Errorf("Partial errors, not all posts successfully loaded.")
 	}
 
 	return posts, nil
@@ -248,7 +258,6 @@ func NewPostFromFile(path string, fi os.FileInfo) (*Post, error) {
 	err = json.Unmarshal(fc, &p)
 
 	if err != nil {
-		fmt.Printf("Unmarshalling error: %v\n", err)
 		return nil, err
 	}
 	p.LastModified = fi.ModTime()

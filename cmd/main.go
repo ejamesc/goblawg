@@ -20,10 +20,11 @@ type App struct {
 	rndr   *render.Render
 	router *mux.Router
 	store  *sessions.CookieStore
+	blog   *goblawg.Blog
 }
 
 func main() {
-	_, err := goblawg.NewBlog(path.Join(currDir, "settings.json"))
+	b, err := goblawg.NewBlog(path.Join(currDir, "settings.json"))
 	if err != nil {
 		fmt.Println("An error with settings.json")
 		panic(err)
@@ -46,6 +47,7 @@ func main() {
 		rndr,
 		r,
 		store,
+		b,
 	}
 
 	fmt.Println(a)
