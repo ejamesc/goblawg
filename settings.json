@@ -4,7 +4,7 @@
 	"description": "The personal site of Cedric Chin, aka Eli James.",
 	"author": "Eli James",
 	"email": "cedric@elijames.org",
-	"out_dir": "public", 
+	"out_dir": "/var/www/elijames.org", 
 	"in_dir": "content", 
   "static_dir": "static"
 }
