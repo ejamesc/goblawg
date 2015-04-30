@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -18,7 +17,7 @@ import (
 )
 
 var extDir, _ = osext.ExecutableFolder()
-var currDir = path.Join(extDir, "../src/github.com/ejamesc/metacog")
+var currDir = path.Join(extDir, "../src/github.com/ejamesc/goblawg")
 
 type App struct {
 	rndr   *render.Render
@@ -31,7 +30,6 @@ type App struct {
 func main() {
 	b, err := goblawg.NewBlog(path.Join(currDir, "settings.json"))
 	if err != nil {
-		fmt.Println("An error with settings.json")
 		panic(err)
 	}
 
