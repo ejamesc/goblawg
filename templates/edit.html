@@ -1,0 +1,52 @@
+<div class='row' style="width: 100%">
+  <header class='small-12 columns'>
+    <h1>goblawg &middot; <a href="{{ .Link }}">{{ .Name }}</a></h1>
+    <div class='header-actions'>
+      <a href="#"><img data-tooltip arai-haspopup='true' class='has-tip' title="Regenerate the entire blog" src='/static/images/regen.png' alt='regen' /></a>
+      <a href="#"><img data-tooltip arai-haspopup='true' class='has-tip' title="Settings" src='/static/images/settings.png' alt='settings' /></a>
+      <a href="#" onclick="$('#logout').submit()"><img data-tooltip arai-haspopup='true' class='has-tip' title="Logout" src='/static/images/logout.png' alt='logout' /></a>
+      <form role='form' id='logout' action='/logout' method='post'></form>
+    </div> 
+  </header>
+</div>
+<form role='form' action='/admin/new' method='post'>
+<div class='row'>
+  <div class="small-12 columns">
+    <input class='title-input large-12.columns' type='text' name='title' value='{{ .Title }}' />
+  </div>
+</div>
+<div class='row'>
+  <div class='small-12 columns editor-container'>
+    <textarea name='body' class='editor'>{{ .Body }}</textarea>
+  </div>
+  <div class='small-12 medium-6 columns'>
+    <input class="button success" type="submit" value="Done" />
+  </div>
+  <div class='small-12 medium-6 columns text-right save-details'>
+    <a href="#">Save</a> - <em>Last saved at {{ .LastModified | fdate }}</em> <br/>
+    Status: {{ if .IsDraft }}<span class="label secondary round">Draft</span> {{ else }} <span class="label round">Published</span> {{ end }}
+    <div class="row">
+      <br/>
+      <div class="small-offset-5 small-2 columns">
+        <label for="right-label" class="right">Timestamp:</label>
+      </div>
+      <div class="small-5 columns">
+        <input type="text" id="right-label" value="{{ .Time | fdate }}">
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+<div class="row">
+  <footer class='small-12 columns text-center'>
+    Powered by goblawg.
+  </footer>
+</div>
+<script>
+$(document).foundation({
+tooltip: {
+disable_for_touch: true,
+}
+});
+</script>
+

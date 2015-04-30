@@ -64,8 +64,18 @@ func main() {
 			negroni.Wrap(admin),
 		))
 
+	ar := admin.PathPrefix("/admin").Subrouter()
+	ar.HandleFunc("/new", a.newPostHandler).Methods("POST")
+	ar.HandleFunc("/new", a.newPostDisplayHandler).Methods("GET")
+	ar.HandleFunc("/edit/{link}", a.editPostDisplayHandler).Methods("GET")
+	ar.HandleFunc("/edit/{link}", a.editPostHandler).Methods("POST")
+
 	r.HandleFunc("/", a.loginHandler).Methods("GET").Name("login")
+	r.HandleFunc("/", a.loginPostHandler).Methods("POST").Name("login")
 	r.HandleFunc("/logout", a.logoutHandler).Methods("POST").Name("logout")
+
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
+		http.FileServer(http.Dir(path.Join(currDir, "static")))))
 
 	n := standardMiddleware()
 	n.UseHandler(r)
@@ -73,7 +83,7 @@ func main() {
 }
 
 func (a *App) adminPageHandler(w http.ResponseWriter, req *http.Request) {
-	a.rndr.HTML(w, http.StatusOK, "admin-front", a.blog)
+	a.rndr.HTML(w, http.StatusOK, "admin", a.blog)
 }
 
 /* Template functions
