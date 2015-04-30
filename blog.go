@@ -8,8 +8,9 @@ import (
 	"os"
 	"path"
 	"sort"
-	"strings"
 	"time"
+
+	"github.com/kennygrant/sanitize"
 )
 
 const layout = "2-Jan-2006-15-04-05"
@@ -125,7 +126,11 @@ func (b *Blog) SavePost(post *Post) error {
 	postsDir := path.Join(b.InDir, "posts")
 	_, err := ioutil.ReadDir(postsDir)
 	if err != nil {
-		os.Mkdir(postsDir, 0775)
+		b.Logger.Printf("posts directory doesn't exist; creating now.")
+		mkErr := os.Mkdir(postsDir, 0775)
+		if mkErr != nil {
+			b.Logger.Printf("Couldn't create a posts directory")
+		}
 	}
 
 	filepath := path.Join(postsDir, filename)
@@ -275,10 +280,17 @@ func isJSONFile(n string) bool {
 }
 
 func constructFilename(post *Post) string {
-	title := strings.Replace(post.Title, " ", "-", -1)
-	title = strings.ToLower(title)
-	timeString := post.Time.Format(layout)
-	filename := timeString + "-" + title + ".json"
+	filename := sanitize.Path(post.Title) + ".json"
+
+	// Remove trailing dash
+	sz := len(filename)
+	if sz > 0 && filename[sz-1] == '-' {
+		filename = filename[:sz-1]
+	}
 
 	return filename
+}
+
+func LinkifyTitle(title string) string {
+	return sanitize.Path(title)
 }
