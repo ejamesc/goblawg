@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"path"
+	"time"
 
 	"github.com/codegangsta/negroni"
 	"github.com/ejamesc/goblawg"
@@ -40,7 +41,8 @@ func main() {
 		Layout:     "base",
 		Funcs: []template.FuncMap{
 			template.FuncMap{
-				"md": markdown,
+				"fdate": dateFmt,
+				"md":    markdown,
 			},
 		},
 	})
@@ -55,7 +57,8 @@ func main() {
 	admin := mux.NewRouter().StrictSlash(true)
 	admin.HandleFunc("/admin", a.adminPageHandler).Methods("GET").Name("admin-home")
 	r.PathPrefix("/admin").Handler(
-		negroni.New(negroni.HandlerFunc(authMiddleware(store, r)),
+		negroni.New(
+			negroni.HandlerFunc(authMiddleware(store, r)),
 			negroni.Wrap(admin),
 		))
 
@@ -71,12 +74,20 @@ func (a *App) adminPageHandler(w http.ResponseWriter, req *http.Request) {
 	a.rndr.HTML(w, http.StatusOK, "admin-front", a.blog)
 }
 
-// Template functions
+/* Template functions
+* */
 func markdown(input []byte) string {
 	output := blackfriday.MarkdownCommon(input)
 	return string(output)
 }
 
+func dateFmt(tt time.Time) string {
+	const layout = "3:04pm, 2 January 2006"
+	return tt.Format(layout)
+}
+
+/* Middleware
+* */
 func standardMiddleware() *negroni.Negroni {
 	return negroni.New(
 		negroni.NewRecovery(),
