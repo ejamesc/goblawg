@@ -25,7 +25,7 @@ type Blog struct {
 	OutDir       string    `json:"out_dir"`
 	StaticDir    string    `json:"static_dir"`
 	LastModified time.Time `json:"last_modified"`
-	*log.Logger
+	Logger       *log.Logger
 }
 
 type Post struct {
@@ -135,7 +135,7 @@ func (b *Blog) SavePost(post *Post) error {
 	}
 	err = ioutil.WriteFile(filepath, jsn, 0776)
 	if err != nil {
-		b.Printf("Unable to write post: %v\n", err)
+		b.Logger.Printf("Unable to write post: %v\n", err)
 		return err
 	}
 

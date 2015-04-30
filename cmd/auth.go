@@ -21,7 +21,7 @@ func (a *App) loginPostHandler(w http.ResponseWriter, req *http.Request) {
 	session, _ := a.store.Get(req, "session")
 	redirURL, err := a.router.Get("login").URL()
 	if err != nil {
-		a.blog.Printf("Problem generating link, %v", err)
+		a.Printf("Problem generating link, %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -32,7 +32,7 @@ func (a *App) loginPostHandler(w http.ResponseWriter, req *http.Request) {
 		session.Save(req, w)
 		redir, err := a.router.Get("admin-front").URL()
 		if err != nil {
-			a.blog.Printf("Problem generating link, %v", err)
+			a.Printf("Problem generating link, %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -49,7 +49,7 @@ func (a *App) logoutHandler(w http.ResponseWriter, req *http.Request) {
 	delete(session.Values, "username")
 	redirectTarget, err := a.router.Get("admin-front").URL()
 	if err != nil {
-		a.blog.Printf("Problem generating link, %v", err)
+		a.Printf("Problem generating link, %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"path"
 	"time"
@@ -24,6 +25,7 @@ type App struct {
 	router *mux.Router
 	store  *sessions.CookieStore
 	blog   *goblawg.Blog
+	*log.Logger
 }
 
 func main() {
@@ -52,6 +54,7 @@ func main() {
 		r,
 		store,
 		b,
+		b.Logger,
 	}
 
 	admin := mux.NewRouter().StrictSlash(true)
