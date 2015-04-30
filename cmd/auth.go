@@ -8,16 +8,6 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func (a *App) checkLogin(req *http.Request) bool {
-	session, _ := a.store.Get(req, "session")
-	usr := session.Values["username"]
-	if usr == username {
-		return true
-	} else {
-		return false
-	}
-}
-
 func (a *App) loginHandler(rw http.ResponseWriter, req *http.Request) {
 	if a.checkLogin(req) {
 		http.Redirect(rw, req, "admin", http.StatusFound)

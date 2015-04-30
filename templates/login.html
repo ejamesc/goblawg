@@ -5,6 +5,7 @@
 </div>
 <div class='row'>
   <div class='small-12 medium-offset-2 medium-8 columns login'>
+    <h1>Login</h1>
     {{ if ne (len .Flashes) 0 }}
     <div class='large-12 columns'>
       {{ range .Flashes }} 
@@ -15,7 +16,6 @@
       {{ end }} 
     </div>
     {{ end }}
-    <h1>Login</h1>
     <form role='form' action="/" method="post">
       <label>Username
         <input type="text" name="name" placeholder="Hullo there, sexy." />
