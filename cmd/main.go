@@ -56,10 +56,11 @@ func main() {
 	}
 
 	admin := mux.NewRouter().StrictSlash(true)
-	admin.HandleFunc("/admin", a.adminPageHandler).Methods("GET").Name("admin-home")
+	admin.HandleFunc("/admin", a.adminPageHandler).Name("admin")
+
 	r.PathPrefix("/admin").Handler(
 		negroni.New(
-			negroni.HandlerFunc(authMiddleware(store, r)),
+			negroni.HandlerFunc(a.authMiddleware(store, r)),
 			negroni.Wrap(admin),
 		))
 

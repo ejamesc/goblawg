@@ -3,65 +3,80 @@ package main
 import (
 	"net/http"
 
+	"github.com/ejamesc/goblawg"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 )
 
-func (a *App) loginHandler(w http.ResponseWriter, req *http.Request) {
-	presenter := struct {
-		Name    string
-		Flashes []string
-	}{a.blog.Name, []string{}}
-	a.rndr.HTML(w, http.StatusOK, "login", presenter)
+func (a *App) checkLogin(req *http.Request) bool {
+	session, _ := a.store.Get(req, "session")
+	usr := session.Values["username"]
+	if usr == username {
+		return true
+	} else {
+		return false
+	}
 }
 
-func (a *App) loginPostHandler(w http.ResponseWriter, req *http.Request) {
-	email := req.FormValue("email")
+func (a *App) loginHandler(rw http.ResponseWriter, req *http.Request) {
+	if a.checkLogin(req) {
+		http.Redirect(rw, req, "admin", http.StatusFound)
+		return
+	}
+
+	session, _ := a.store.Get(req, "session")
+	fs := session.Flashes()
+	session.Save(req, rw)
+
+	presenter := struct {
+		*goblawg.Blog
+		Flashes []interface{}
+	}{
+		a.blog,
+		fs,
+	}
+	a.rndr.HTML(rw, http.StatusOK, "login", presenter)
+}
+
+func (a *App) loginPostHandler(rw http.ResponseWriter, req *http.Request) {
+	name := req.FormValue("name")
 	pass := req.FormValue("password")
 	session, _ := a.store.Get(req, "session")
+
 	redirURL, err := a.router.Get("login").URL()
 	if err != nil {
 		a.Printf("Problem generating link, %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
 	}
-
 	redirectTarget := redirURL.String()
 
-	if email == username && pass == password {
+	if name == username && pass == password {
 		session.Values["username"] = username
-		session.Save(req, w)
-		redir, err := a.router.Get("admin-front").URL()
-		if err != nil {
-			a.Printf("Problem generating link, %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		redirectTarget = redir.String()
+		session.Save(req, rw)
+		redirectTarget = "/admin"
 	} else {
 		session.AddFlash("Wrong username or password!")
-		session.Save(req, w)
+		session.Save(req, rw)
 	}
-	http.Redirect(w, req, redirectTarget, http.StatusFound)
+	http.Redirect(rw, req, redirectTarget, http.StatusFound)
 }
 
-func (a *App) logoutHandler(w http.ResponseWriter, req *http.Request) {
+func (a *App) logoutHandler(rw http.ResponseWriter, req *http.Request) {
 	session, _ := a.store.Get(req, "session")
 	delete(session.Values, "username")
-	redirectTarget, err := a.router.Get("admin-front").URL()
+	redirectTarget, err := a.router.Get("login").URL()
 	if err != nil {
 		a.Printf("Problem generating link, %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, req, redirectTarget.String(), http.StatusFound)
+	http.Redirect(rw, req, redirectTarget.String(), http.StatusFound)
 }
 
 // Auth Middleware
-func authMiddleware(store *sessions.CookieStore, r *mux.Router) func(http.ResponseWriter, *http.Request, http.HandlerFunc) {
+func (a *App) authMiddleware(store *sessions.CookieStore, r *mux.Router) func(http.ResponseWriter, *http.Request, http.HandlerFunc) {
 	return func(w http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
-		session, _ := store.Get(req, "session")
-		username := session.Values["username"]
-		if username == "ejames" {
+		if a.checkLogin(req) {
 			next(w, req)
 		} else {
 			r, _ := r.Get("admin-front").URL()
