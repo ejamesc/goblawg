@@ -1,0 +1,57 @@
+<div class='row'>
+  <header class='small-12 columns'>
+    <h1>goblawg &middot; <a href="{{ .Link }}">{{ .Name }}</a></h1>
+    <div class='header-actions'>
+      <a href="#" onclick="$('#regen').submit()"><img data-tooltip arai-haspopup='true' class='has-tip' title="Regenerate the entire blog" src='/static/images/regen.png' alt='regen' /></a>
+      <a href="#"><img data-tooltip arai-haspopup='true' class='has-tip' title="Settings" src='/static/images/settings.png' alt='settings' /></a>
+        <a href="#" onclick="$('#logout').submit()"><img data-tooltip arai-haspopup='true' class='has-tip' title="Logout" src='/static/images/logout.png' alt='logout' /></a>
+      <form role='form' id='logout' action='/logout' method='post'></form>
+      <form role='form' id='regen' action='/admin/regen' method='post'></form>
+    </div>
+  </header>
+</div>
+<div class='row'>
+  <div class='small-12 columns'>
+    <div class='blog-actions'>
+      <a href='/admin/new' class='button tiny radius success'>New Post</a>
+    </div>
+  </div>
+  <div class='small-12 columns posts-list'>
+    <ul>
+      {{ range .Posts }}
+      <li>
+      <h4>{{ fdate .Time }}</h4>
+      <h3><a href='/admin/edit/{{ .Link }}'>{{ .Title }}</a></h3>
+      <div class="post-actions">
+        {{ if .IsDraft }}<span class="label secondary round">Draft</span>{{ end }}
+        <a href="/{{ .Link }}">view</a>
+        <a onclick='deletePost("/admin/delete/{{ .Link }}")' href='#'>delete</a>
+      </div>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <footer class='small-12 columns text-center'>
+    Powered by goblawg.
+  </footer>
+</div>
+<script>
+$(document).foundation({
+tooltip: {
+disable_for_touch: true,
+}
+});
+function deletePost(delURL) {
+  var r = confirm("Are you sure you want to delete that?");
+  if (r == true) {
+    $.ajax({
+    url: delURL, 
+    type: "DELETE", 
+    success: function(){location.reload();}
+  });
+  }
+}
+</script>
+

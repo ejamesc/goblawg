@@ -1,0 +1,20 @@
+<div class='row'>
+  <header class='small-12 columns'>
+    <h1>goblawg &middot; <a href="{{ .Link }}">{{ .Name }}</a></h1>
+  </header>
+</div>
+<div class='row'>
+  <div class='small-12 medium-offset-2 medium-8 columns login'>
+    <h1>Login</h1>
+    <form role='form' action="/login" method="post">
+      <label>Username
+        <input type="text" name="name" placeholder="Hullo there, sexy." />
+      </label>
+      <label>Password
+        <input type="password" name="password" placeholder="El Psy Congroo." />
+      </label>
+      <input class="button success" type="submit" value="Onwards!" />
+    </form>
+  </div>
+</div>
+

@@ -1,0 +1,146 @@
+/* Admin styles 
+ * Can I be messy with this because nobody's watching? :P
+ */
+
+body {
+  font-family: 'calluna', Georgia, serif;
+}
+
+p, li { 
+  color: rgba(0, 0, 0, 0.8);
+  line-height: 140%; 
+  font-size: 1.25rem; 
+  font-family: 'calluna', Georgia, serif; 
+}
+
+h1, h2, h3, h4, h5 { font-family: 'adelle', Georgia, serif; }
+h2 { font-size: 1.6rem; }
+
+header {
+  padding: 30px 0;
+}
+
+header h1 {
+  font-size: 1.3rem;
+  color: #aaa;
+  display: inline-block;
+}
+
+.header-actions {
+  display: inline-block;
+  float: right;
+}
+
+.header-actions img {
+  width: 30px;
+  opacity: 0.4;
+  cursor: pointer;
+  border: none;
+}
+.header-actions img:hover {
+  opacity: 1.0; 
+  border: none;
+}
+
+.header-actions a {
+  text-decoration: none;
+}
+
+.blog-actions {
+  float: left;
+}
+
+.posts-list {
+  height: 100%;
+}
+
+.posts-list ul { padding-left: 0; margin-left: 0; }
+
+.posts-list li {
+  display: block;
+  list-style: none;
+  padding: 20px 10px 20px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.posts-list li h3 {
+  display: inline-block;
+  font-weight: bold;
+  max-width: 80%;
+}
+
+.posts-list li h3 a {
+  color: #333; 
+  font-size: 2.3rem;
+}
+
+.posts-list li h3 a:hover { color: #005a88; }
+
+.posts-list h4 {
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #777;
+  margin: 0;
+}
+
+.post-actions {
+  font: 1.05rem Helvetica, Arial, sans-serif;
+}
+
+.post-actions a {
+  margin: 0 0 0 3px;
+  color: #005a88;
+}
+.post-actions a:hover { color: #008cba; }
+
+footer {
+  margin-bottom: 40px;
+}
+
+/* Login styles */
+.login {
+  margin-top: 40px;
+}
+
+/* Editor styles */
+textarea:focus, input:focus {
+    outline: none;
+    border-style: none;
+}
+
+input.title-input {
+  background-color: #fff;
+  height: 50px;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+input.title-input:focus { outline:0; }
+
+.editor-container {
+  height: 100%;
+}
+
+.editor {
+  font: 1.2rem "Inconsolata", Courier, monospace;
+  height: 35rem;
+}
+
+.save-details {
+  color: #999;
+}
+
+/* Phones */
+@media only screen {
+  .posts-actions {
+    float: left;
+  }
+}
+
+/* Screens */
+@media only screen and (min-width: 64.063em) {
+  .post-actions {
+    float: right;
+    margin-top: 1.5rem;
+  }
+} /* min-width 1025px, large screens */
