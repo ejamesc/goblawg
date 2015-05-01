@@ -4,14 +4,25 @@
     <div class='header-actions'>
       <a href="#" onclick="$('#regen').submit()"><img data-tooltip arai-haspopup='true' class='has-tip' title="Regenerate the entire blog" src='/static/images/regen.png' alt='regen' /></a>
       <a href="#"><img data-tooltip arai-haspopup='true' class='has-tip' title="Settings" src='/static/images/settings.png' alt='settings' /></a>
-        <a href="#" onclick="$('#logout').submit()"><img data-tooltip arai-haspopup='true' class='has-tip' title="Logout" src='/static/images/logout.png' alt='logout' /></a>
+      <a href="#" onclick="$('#logout').submit()"><img data-tooltip arai-haspopup='true' class='has-tip' title="Logout" src='/static/images/logout.png' alt='logout' /></a>
       <form role='form' id='logout' action='/logout' method='post'></form>
       <form role='form' id='regen' action='/admin/regen' method='post'></form>
     </div>
   </header>
 </div>
+
 <div class='row'>
   <div class='small-12 columns'>
+    {{ if ne (len .Flashes) 0 }}
+    <div class='large-12 columns'>
+      {{ range .Flashes }} 
+      <div data-alert class='alert-box info'>
+        {{ . }}
+        <a href="#" class="close">&times;</a>
+      </div>
+      {{ end }} 
+    </div>
+    {{ end }}
     <div class='blog-actions'>
       <a href='/admin/new' class='button tiny radius success'>New Post</a>
     </div>
@@ -47,11 +58,11 @@ function deletePost(delURL) {
   var r = confirm("Are you sure you want to delete that?");
   if (r == true) {
     $.ajax({
-    url: delURL, 
-    type: "DELETE", 
-    success: function(){location.reload();}
-  });
-  }
+url: delURL, 
+type: "DELETE", 
+success: function(){location.reload();}
+});
+}
 }
 </script>
 

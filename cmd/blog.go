@@ -114,8 +114,8 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 	post.LastModified = time.Now()
 
 	err := a.blog.EditPost(post)
+	session, _ := a.store.Get(req, "session")
 	if err != nil {
-		session, _ := a.store.Get(req, "session")
 		session.AddFlash(fmt.Sprintf("Unable to save post: %s", err))
 		fs := session.Flashes()
 		session.Save(req, rw)
@@ -134,5 +134,7 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	session.AddFlash(fmt.Sprintf("%s was successfully edited.", post.Title))
+	session.Save(req, rw)
 	http.Redirect(rw, req, "/admin", http.StatusFound)
 }

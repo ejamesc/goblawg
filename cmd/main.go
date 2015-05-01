@@ -82,8 +82,13 @@ func main() {
 	n.Run(":3000")
 }
 
-func (a *App) adminPageHandler(w http.ResponseWriter, req *http.Request) {
-	a.rndr.HTML(w, http.StatusOK, "admin", a.blog)
+func (a *App) adminPageHandler(rw http.ResponseWriter, req *http.Request) {
+	fs := a.getFlashes(rw, req)
+	presenter := struct {
+		*goblawg.Blog
+		Flashes []interface{}
+	}{a.blog, fs}
+	a.rndr.HTML(rw, http.StatusOK, "admin", presenter)
 }
 
 /* Template functions
