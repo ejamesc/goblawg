@@ -1,7 +1,6 @@
 package goblawg_test
 
 import (
-	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -65,7 +64,7 @@ var infoContent = fmt.Sprintf(`{"title": "Test Post",
 	"time": "%s", 
 	"is_draft": false, 
 	"last_modified": "%s"}`,
-	base64.StdEncoding.EncodeToString([]byte("The quick brown fox jumps over the lazy dog")),
+	"The quick brown fox jumps over the lazy dog",
 	time.Now().Format(time.RFC3339),
 	time.Now().Format(time.RFC3339))
 

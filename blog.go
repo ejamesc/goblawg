@@ -16,17 +16,17 @@ import (
 const layout = "2-Jan-2006-15-04-05"
 
 type Blog struct {
-	Name         string    `json:"name"`
-	Link         string    `json:"link"`
-	Description  string    `json:"description"`
-	Author       string    `json:"author"`
-	Email        string    `json:"email"`
-	Posts        []*Post   `json:"posts"`
-	InDir        string    `json:"in_dir"`
-	OutDir       string    `json:"out_dir"`
-	StaticDir    string    `json:"static_dir"`
-	LastModified time.Time `json:"last_modified"`
-	Logger       *log.Logger
+	Name         string      `json:"name"`
+	Link         string      `json:"link"`
+	Description  string      `json:"description"`
+	Author       string      `json:"author"`
+	Email        string      `json:"email"`
+	Posts        []*Post     `json:"posts"`
+	InDir        string      `json:"in_dir"`
+	OutDir       string      `json:"out_dir"`
+	StaticDir    string      `json:"static_dir"`
+	LastModified time.Time   `json:"last_modified"`
+	Logger       *log.Logger `json:"logger"`
 }
 
 type Post struct {
@@ -134,7 +134,11 @@ func (b *Blog) SavePost(post *Post) error {
 	}
 
 	filepath := path.Join(postsDir, filename)
-	jsn, err := json.MarshalIndent(post, "", "  ")
+	postToMarshal := struct {
+		*Post
+		Body string `json:"body"`
+	}{post, string(post.Body)}
+	jsn, err := json.MarshalIndent(postToMarshal, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -190,13 +194,14 @@ type omit *struct{}
 // This info.json is part of the blog's public API, and
 // is where the LastModified timestamp is taken from
 func (b *Blog) WriteInfoJSON() {
-	toWrite, _ := json.Marshal(struct {
+	toWrite, _ := json.MarshalIndent(struct {
 		*Blog
 		InDir     omit `json:"in_dir,omitempty"`
 		OutDir    omit `json:"out_dir,omitempty"`
 		StaticDir omit `json:"static_dir,omitempty"`
 		Posts     omit `json:"posts,omitempty"`
-	}{Blog: b})
+		Logger    omit `json:"logger,omitempty"`
+	}{Blog: b}, "", "  ")
 	_ = ioutil.WriteFile(path.Join(b.OutDir, "info.json"), toWrite, 0775)
 }
 
@@ -259,8 +264,14 @@ func NewPostFromFile(path string, fi os.FileInfo) (*Post, error) {
 		return nil, err
 	}
 
-	var p *Post
-	err = json.Unmarshal(fc, &p)
+	tp := struct {
+		*Post
+		Body string `json:"body"`
+	}{&Post{}, ""}
+	err = json.Unmarshal(fc, &tp)
+
+	p := tp.Post
+	p.Body = []byte(tp.Body)
 
 	if err != nil {
 		return nil, err
