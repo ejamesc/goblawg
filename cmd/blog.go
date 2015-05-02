@@ -27,16 +27,30 @@ func (a *App) newPostDisplayHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
-	post := &goblawg.Post{}
-	post.Body = []byte(req.FormValue("body"))
-	post.Title = req.FormValue("title")
-	post.Link = goblawg.LinkifyTitle(post.Title)
+	session, _ := a.store.Get(req, "session")
+	title, body := req.FormValue("title"), req.FormValue("body")
+	if title == "" || body == "" {
+		session.AddFlash("Post title or body can't be left empty!")
+		session.Save(req, rw)
 
-	isDraft := false
-	if req.FormValue("draft") == "true" {
-		isDraft = true
+		fs := a.getFlashes(rw, req)
+		presenter := &postPresenter{
+			a.blog,
+			title,
+			body,
+			fs,
+		}
+		a.rndr.HTML(rw, http.StatusOK, "newpost", presenter)
 	}
-	post.IsDraft = isDraft
+	post := a.blog.NewPost(title,
+		[]byte(body),
+		false,
+		time.Now(),
+		time.Now())
+
+	if req.FormValue("draft") == "true" {
+		post.IsDraft = true
+	}
 
 	// Change this later
 	post.Time = time.Now()
@@ -44,9 +58,7 @@ func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 	post.LastModified = time.Now()
 
 	err := a.blog.SavePost(post)
-	// TODO: Change to session to display error.
 	if err != nil {
-		session, _ := a.store.Get(req, "session")
 		session.AddFlash(fmt.Sprintf("Unable to save post: %s", err))
 		fs := session.Flashes()
 		session.Save(req, rw)
@@ -74,67 +86,78 @@ func (a *App) editPostDisplayHandler(rw http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	fs := a.getFlashes(rw, req)
+
 	presenter := struct {
 		*goblawg.Post
 		Body     string
 		BlogLink string
 		Name     string
+		Flashes  []interface{}
 	}{
 		post,
 		string(post.Body),
 		a.blog.Link,
 		a.blog.Name,
+		fs,
 	}
 
 	a.rndr.HTML(rw, http.StatusOK, "edit", presenter)
 }
 
 func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
+	session, _ := a.store.Get(req, "session")
 	vars := mux.Vars(req)
 	link := vars["link"]
-	post := a.blog.GetPostByLink(link)
+	oldPost := a.blog.GetPostByLink(link)
 
-	if post == nil {
+	if oldPost == nil {
 		http.Error(rw, "No such post exists", http.StatusNotFound)
 		return
 	}
 
-	post.Body = []byte(req.FormValue("body"))
-	post.Title = req.FormValue("title")
-
-	isDraft := false
-	if req.FormValue("draft") == "true" {
-		isDraft = true
-	}
-	post.IsDraft = isDraft
-
-	// Change this later, to check from form
-	// post.Time = time.Now()
-
-	post.LastModified = time.Now()
-
-	err := a.blog.EditPost(post)
-	session, _ := a.store.Get(req, "session")
-	if err != nil {
-		session.AddFlash(fmt.Sprintf("Unable to save post: %s", err))
-		fs := session.Flashes()
+	title, body := req.FormValue("title"), req.FormValue("body")
+	if title == "" || body == "" {
+		session.AddFlash("Post title or body can't be left empty!")
 		session.Save(req, rw)
+
+		fs := a.getFlashes(rw, req)
 
 		presenter := struct {
 			*goblawg.Post
-			*goblawg.Blog
-			Flashes []interface{}
+			Title    string
+			Body     string
+			BlogLink string
+			Name     string
+			Flashes  []interface{}
 		}{
-			post,
-			a.blog,
+			oldPost,
+			title,
+			body,
+			a.blog.Link,
+			a.blog.Name,
 			fs,
 		}
 
 		a.rndr.HTML(rw, http.StatusOK, "edit", presenter)
 		return
 	}
+	newPost := a.blog.NewPost(title, []byte(body), false, oldPost.Time, time.Now())
+	if req.FormValue("draft") == "true" {
+		newPost.IsDraft = true
+	}
+	// TODO: Change timestamp later, to check from form
 
-	session.AddFlash(fmt.Sprintf("%s was successfully edited.", post.Title))
+	err := a.blog.EditPost(oldPost, newPost)
+	if err != nil {
+		session.AddFlash(fmt.Sprintf("Unable to edit post: %s", err))
+		session.Save(req, rw)
+
+		http.Redirect(rw, req, "/admin", http.StatusFound)
+		return
+	}
+
+	session.AddFlash(fmt.Sprintf("%s was successfully edited.", oldPost.Title))
 	session.Save(req, rw)
 	http.Redirect(rw, req, "/admin", http.StatusFound)
 }
