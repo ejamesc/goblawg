@@ -175,3 +175,21 @@ func (a *App) deletePostHandler(rw http.ResponseWriter, req *http.Request) {
 
 	http.Redirect(rw, req, "/admin", http.StatusFound) // TODO: right status?
 }
+
+func (a *App) generateHandler(rw http.ResponseWriter, req *http.Request) {
+	session, _ := a.store.Get(req, "session")
+	errors := a.blog.GenerateSite()
+	if errors != nil {
+		for _, e := range errors {
+			if e == nil {
+				continue
+			}
+			session.AddFlash(fmt.Sprintf("Unable to generate site: %v", e))
+			session.Save(req, rw)
+		}
+	} else {
+		session.AddFlash("Blog successfully regenerated!")
+		session.Save(req, rw)
+	}
+	http.Redirect(rw, req, "/admin", http.StatusFound)
+}

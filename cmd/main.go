@@ -5,14 +5,12 @@ import (
 	"log"
 	"net/http"
 	"path"
-	"time"
 
 	"github.com/codegangsta/negroni"
 	"github.com/ejamesc/goblawg"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/kardianos/osext"
-	"github.com/russross/blackfriday"
 	"github.com/unrolled/render"
 )
 
@@ -41,8 +39,8 @@ func main() {
 		Layout:     "base",
 		Funcs: []template.FuncMap{
 			template.FuncMap{
-				"fdate": dateFmt,
-				"md":    markdown,
+				"fdate": goblawg.DateFmt,
+				"md":    goblawg.Markdown,
 			},
 		},
 	})
@@ -70,6 +68,7 @@ func main() {
 	ar.HandleFunc("/edit/{link}", a.editPostDisplayHandler).Methods("GET")
 	ar.HandleFunc("/edit/{link}", a.editPostHandler).Methods("POST")
 	ar.HandleFunc("/delete/{link}", a.deletePostHandler).Methods("DELETE")
+	ar.HandleFunc("/regen", a.generateHandler).Methods("POST")
 
 	r.HandleFunc("/", a.loginHandler).Methods("GET").Name("login")
 	r.HandleFunc("/", a.loginPostHandler).Methods("POST").Name("login")
@@ -90,18 +89,6 @@ func (a *App) adminPageHandler(rw http.ResponseWriter, req *http.Request) {
 		Flashes []interface{}
 	}{a.blog, fs}
 	a.rndr.HTML(rw, http.StatusOK, "admin", presenter)
-}
-
-/* Template functions
-* */
-func markdown(input []byte) string {
-	output := blackfriday.MarkdownCommon(input)
-	return string(output)
-}
-
-func dateFmt(tt time.Time) string {
-	const layout = "3:04pm, 2 January 2006"
-	return tt.Format(layout)
 }
 
 /* Middleware

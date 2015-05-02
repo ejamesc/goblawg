@@ -1,5 +1,88 @@
-<h1>{{.Title}}</h1>
-<p>{{printf "%s" .Time}}</p>
-<p>{{printf "%s" .Body}}</p>
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>{{ .Title }}</title>
+    <meta content='Eli James' name='author' />
+    <meta content='Personal site of Eli James' name='description' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
 
+    <link href='./css/normalize.css' type='text/css' rel='stylesheet' />
+    <link href='./css/foundation.min.css' type='text/css' rel='stylesheet' />
 
+    <link href='./css/style.css' type='text/css' rel='stylesheet' />
+
+    <script src="./js/vendor/modernizr.js"></script>
+    <script type="text/javascript" src="//use.typekit.net/nlh5hzh.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  </head>
+  <body>
+     <div class='row'>
+      <header class='small-12 columns'>
+        <h1 class="text-center"><a href='/'>eli james</a></h1>
+        <nav>
+          <ul class="text-center">
+            <li><a href='/about'>about</a></li>
+            <li><a href='/essays'>essays</a></li>
+            <li><a href='/work'>work</a></li>
+            <li><a href='/contact'>contact</a></li>
+            <li><a href="http://metacog.elijames.org">metacog</a></li>
+          </ul>
+        </nav> 
+      </header>
+    </div>
+    <div class='row'><!--outer-row-->
+      <div class="small-12 medium-10 medium-offset-1 columns">
+        <div class='row'>
+          <div class='small-12 medium-10 medium-offset-1 columns'>
+            <h2><em>{{ .Title }}</em></h2>
+            <p><span class='essay-date'>{{ .Time | fdate }}</span></p>
+            {{ .Body | md }}
+          </div>
+        </div>
+        <hr/>
+        <div class='row'>
+          <div class='small-12 columns subscribe-div'>
+            <h2 class='heading'>Get updates</h2>
+            <p>I write an essay a week on topics loosely connected to building a technology company in Asia. You may subscribe below for essay updates:</p>
+            <div class="row collapse">
+              <div class="small-6 medium-6 medium-offset-2 columns">
+                <input type="text" placeholder="Your Email Address">
+              </div>
+              <div class="small-2 end columns">
+                <a href="#" class="button blue-background postfix">Subscribe</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr/>
+        <div class='row'>
+          <div class='small-12 columns heading-div'>
+            <h2 class='heading'>Other essays</h2>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='small-12 medium-4 columns essay'>
+            <h2><a href="/">Because Asia</a></h2>
+            <p>If we say that the last 20 years of the Internet belonged to the West, the most interesting problems in the next 20 that can solved by Software will be found here in the East.</p>
+          </div>
+          <div class='small-12 medium-4 columns essay'>
+            <h2><a href="/">Negative Knowledge and Success Stories</a></h2>
+            <p>Or, why business books mostly suck.</p>
+
+          </div>
+          <div class='small-12 medium-4 columns essay'>
+            <h2><a href="/">Love in the Internet Age</a></h2>
+            <p>What is digital isn't always what is real.</p> 
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
+          <footer class='small-12 columns text-center'>
+            &copy; forever Eli James. Built on goblawg. 
+          </footer>
+        </div>
+      </div><!--medium-10--> 
+    </div><!--outer-row-->
+    </body>
+    </html>

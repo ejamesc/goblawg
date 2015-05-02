@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/feeds"
+	"github.com/kardianos/osext"
 )
 
 /* Contains all the generator functions for Blog */
@@ -68,16 +69,20 @@ func (b *Blog) GeneratePostsWithTemplate(tmpl string) error {
 				return err
 			}
 
-			t, err := template.ParseFiles(tmpl)
-			if err != nil {
-				return err
+			funcMap := template.FuncMap{
+				"fdate": DateFmt,
+				"md":    Markdown,
 			}
 
+			extDir, _ := osext.ExecutableFolder()
+			tmpDir := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "templates")
+			t := template.Must(template.New("essay").Funcs(funcMap).ParseFiles(path.Join(tmpDir, tmpl)))
+
 			pr := struct {
-				Title string
-				Body  template.HTML
-				Time  time.Time
-			}{post.Title, template.HTML(post.Body), post.Time}
+				*Post
+			}{
+				post,
+			}
 
 			t.Execute(file, pr)
 		}
