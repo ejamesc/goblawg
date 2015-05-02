@@ -161,3 +161,17 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 	session.Save(req, rw)
 	http.Redirect(rw, req, "/admin", http.StatusFound)
 }
+
+func (a *App) deletePostHandler(rw http.ResponseWriter, req *http.Request) {
+	link := mux.Vars(req)["link"]
+	post := a.blog.GetPostByLink(link)
+	err := a.blog.DeletePost(post)
+
+	if err != nil {
+		session, _ := a.store.Get(req, "session")
+		session.AddFlash(fmt.Sprintf("Unable to delete post: %S", err))
+		session.Save(req, rw)
+	}
+
+	http.Redirect(rw, req, "/admin", http.StatusFound) // TODO: right status?
+}

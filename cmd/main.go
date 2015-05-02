@@ -69,6 +69,7 @@ func main() {
 	ar.HandleFunc("/new", a.newPostDisplayHandler).Methods("GET")
 	ar.HandleFunc("/edit/{link}", a.editPostDisplayHandler).Methods("GET")
 	ar.HandleFunc("/edit/{link}", a.editPostHandler).Methods("POST")
+	ar.HandleFunc("/delete/{link}", a.deletePostHandler).Methods("DELETE")
 
 	r.HandleFunc("/", a.loginHandler).Methods("GET").Name("login")
 	r.HandleFunc("/", a.loginPostHandler).Methods("POST").Name("login")
