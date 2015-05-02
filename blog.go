@@ -163,7 +163,7 @@ func (b *Blog) DeletePost(p *Post) error {
 		}
 	}
 	if !deleted {
-		return fmt.Errorf("Post did not exist")
+		return fmt.Errorf("Post does not exist")
 	}
 
 	path := path.Join(b.InDir, "posts", constructFilename(p))
@@ -175,12 +175,24 @@ func (b *Blog) DeletePost(p *Post) error {
 	return nil
 }
 
-func (b *Blog) EditPost(p *Post) error {
-	err := b.DeletePost(p)
+func (b *Blog) NewPost(title string, body []byte, isDraft bool, time, lastMod time.Time) *Post {
+	p := &Post{}
+	p.Title = title
+	p.Body = body
+	p.IsDraft = isDraft
+	p.Time = time
+	p.LastModified = lastMod
+	p.Link = linkifyTitle(title)
+
+	return p
+}
+
+func (b *Blog) EditPost(oldPost, newPost *Post) error {
+	err := b.DeletePost(oldPost)
 	if err != nil {
 		return err
 	}
-	err = b.SavePost(p)
+	err = b.SavePost(newPost)
 	if err != nil {
 		return err
 	}
@@ -302,6 +314,6 @@ func constructFilename(post *Post) string {
 	return filename
 }
 
-func LinkifyTitle(title string) string {
+func linkifyTitle(title string) string {
 	return sanitize.Path(title)
 }
