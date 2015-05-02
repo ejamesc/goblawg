@@ -54,6 +54,7 @@ func (a *App) loginPostHandler(rw http.ResponseWriter, req *http.Request) {
 func (a *App) logoutHandler(rw http.ResponseWriter, req *http.Request) {
 	session, _ := a.store.Get(req, "session")
 	delete(session.Values, "username")
+	session.Save(req, rw)
 	redirectTarget, err := a.router.Get("login").URL()
 	if err != nil {
 		a.Printf("Problem generating link, %v", err)
@@ -69,7 +70,7 @@ func (a *App) authMiddleware(store *sessions.CookieStore, r *mux.Router) func(ht
 		if a.checkLogin(req) {
 			next(w, req)
 		} else {
-			r, _ := r.Get("admin-front").URL()
+			r, _ := r.Get("login").URL()
 			http.Redirect(w, req, r.String(), http.StatusFound)
 		}
 	}
