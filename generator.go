@@ -39,6 +39,15 @@ func (b *Blog) GenerateSite() []error {
 
 func (b *Blog) GeneratePostsWithTemplate(tmpl string) error {
 
+	funcMap := template.FuncMap{
+		"fdate": DateFmt,
+		"md":    Markdown,
+	}
+
+	extDir, _ := osext.ExecutableFolder()
+	tmpDir := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "templates")
+	t := template.Must(template.New("essay.html").Funcs(funcMap).ParseFiles(path.Join(tmpDir, tmpl)))
+
 	for _, post := range b.Posts {
 		filepath := post.Link
 		filepath = path.Join(b.OutDir, filepath)
@@ -69,22 +78,10 @@ func (b *Blog) GeneratePostsWithTemplate(tmpl string) error {
 				return err
 			}
 
-			funcMap := template.FuncMap{
-				"fdate": DateFmt,
-				"md":    Markdown,
+			err = t.Execute(file, post)
+			if err != nil {
+				fmt.Println(err)
 			}
-
-			extDir, _ := osext.ExecutableFolder()
-			tmpDir := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "templates")
-			t := template.Must(template.New("essay").Funcs(funcMap).ParseFiles(path.Join(tmpDir, tmpl)))
-
-			pr := struct {
-				*Post
-			}{
-				post,
-			}
-
-			t.Execute(file, pr)
 		}
 	}
 

@@ -179,15 +179,17 @@ func (a *App) deletePostHandler(rw http.ResponseWriter, req *http.Request) {
 func (a *App) generateHandler(rw http.ResponseWriter, req *http.Request) {
 	session, _ := a.store.Get(req, "session")
 	errors := a.blog.GenerateSite()
-	if errors != nil {
-		for _, e := range errors {
-			if e == nil {
-				continue
-			}
-			session.AddFlash(fmt.Sprintf("Unable to generate site: %v", e))
-			session.Save(req, rw)
+	noErrors := true
+	for _, e := range errors {
+		if e == nil {
+			continue
 		}
-	} else {
+		session.AddFlash(fmt.Sprintf("Unable to generate site: %v", e))
+		session.Save(req, rw)
+		noErrors = false
+	}
+
+	if noErrors {
 		session.AddFlash("Blog successfully regenerated!")
 		session.Save(req, rw)
 	}
