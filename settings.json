@@ -5,6 +5,6 @@
 	"author": "Eli James",
 	"email": "cedric@elijames.org",
 	"out_dir": "/var/www/elijames.org", 
-	"in_dir": "content", 
+	"in_dir": "/home/gocode/src/github.com/ejamesc/goblawg/content", 
   "static_dir": "static"
 }

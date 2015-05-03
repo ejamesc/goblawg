@@ -80,7 +80,7 @@ func (b *Blog) GeneratePostsWithTemplate(tmpl string) error {
 
 			err = t.Execute(file, post)
 			if err != nil {
-				fmt.Println(err)
+				return err
 			}
 		}
 	}
