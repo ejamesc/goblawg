@@ -101,6 +101,9 @@ func (b *Blog) GetPublishedPosts() []*Post {
 	return b.getPostsWithDraft(false)
 }
 
+// TODO: This is actually really stupid.
+// All mutations should be maintained at reverse chronological order.
+// Smart data, not code.
 func (b *Blog) GetAllPosts() []*Post {
 	return b.getPostsWithDraft(true)
 }

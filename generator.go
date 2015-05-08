@@ -15,21 +15,21 @@ import (
 
 /* Contains all the generator functions for Blog */
 func (b *Blog) GenerateSite() []error {
-	errors := []error{nil, nil, nil}
+	errors := []error{}
 
 	pErr := b.GeneratePostsWithTemplate("essay.html")
 	if pErr != nil {
-		errors[0] = pErr
+		errors = append(errors, pErr)
 	}
 
 	rssErr := b.GenerateRSS()
 	if rssErr != nil {
-		errors[1] = rssErr
+		errors = append(errors, rssErr)
 	}
 
-	pageErr := b.GenerateSitePages()
-	if pageErr != nil {
-		errors[2] = pageErr
+	pageErrors := b.GenerateSitePages()
+	if pageErrors != nil {
+		errors = append(errors, pageErrors...)
 	}
 
 	b.WriteInfoJSON()
@@ -129,32 +129,36 @@ func (b *Blog) GenerateRSS() error {
 }
 
 // Generate the rest of the templates that isn't the blog
-func (b *Blog) GenerateSitePages() error {
+func (b *Blog) GenerateSitePages() []error {
+	errors := []error{}
 	fil, err := ioutil.ReadDir(b.InDir)
 	if err != nil {
-		return err
+		errors = append(errors, err)
+		return errors
 	}
 
 	for _, fi := range fil {
 		if path.Ext(fi.Name()) == ".html" {
 			t, err := template.ParseFiles(path.Join(b.InDir, fi.Name()))
 			if err != nil {
-				return err
+				errors = append(errors, err)
 			}
 
 			name := strings.Split(fi.Name(), ".")
 			if len(name) != 2 {
-				return fmt.Errorf("%s is a bad filename, expected x.html", fi.Name())
+				errors = append(errors, fmt.Errorf("%s is a bad filename, expected x.html", fi.Name()))
 			}
 
 			oPath := path.Join(b.OutDir, name[0], "index.html")
 			f, err := os.OpenFile(oPath, os.O_RDWR|os.O_CREATE, 0776)
 			if err != nil {
-				return err
+				errors = append(errors, err)
 			}
 
 			t.Execute(f, b)
 		}
+
+		return errors
 	}
 
 	b.LastModified = time.Now()

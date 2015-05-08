@@ -86,8 +86,9 @@ func (a *App) adminPageHandler(rw http.ResponseWriter, req *http.Request) {
 	fs := a.getFlashes(rw, req)
 	presenter := struct {
 		*goblawg.Blog
+		Posts   []*goblawg.Post
 		Flashes []interface{}
-	}{a.blog, fs}
+	}{a.blog, a.blog.GetAllPosts(), fs}
 	a.rndr.HTML(rw, http.StatusOK, "admin", presenter)
 }
 
