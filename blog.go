@@ -34,6 +34,7 @@ type Post struct {
 	Body         []byte    `json:"body"`
 	Link         string    `json:"link"`
 	Time         time.Time `json:"time"`
+	Short        string    `json:"short"`
 	IsDraft      bool      `json:"is_draft"`
 	LastModified time.Time `json:"last_modified"`
 }
@@ -175,10 +176,11 @@ func (b *Blog) DeletePost(p *Post) error {
 	return nil
 }
 
-func (b *Blog) NewPost(title string, body []byte, isDraft bool, time, lastMod time.Time) *Post {
+func (b *Blog) NewPost(title string, body []byte, short string, isDraft bool, time, lastMod time.Time) *Post {
 	p := &Post{}
 	p.Title = title
 	p.Body = body
+	p.Short = short
 	p.IsDraft = isDraft
 	p.Time = time
 	p.LastModified = lastMod

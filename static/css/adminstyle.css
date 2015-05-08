@@ -126,6 +126,11 @@ input.title-input:focus { outline:0; }
   height: 35rem;
 }
 
+.short-editor {
+  font: 1.2rem "Inconsolata", Courier, monospace;
+  height: 8rem;
+}
+
 .save-details {
   color: #999;
 }

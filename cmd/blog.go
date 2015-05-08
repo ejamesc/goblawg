@@ -13,12 +13,14 @@ type postPresenter struct {
 	*goblawg.Blog
 	TitleValue string
 	BodyValue  string
+	ShortValue string
 	Flashes    []interface{}
 }
 
 func (a *App) newPostDisplayHandler(rw http.ResponseWriter, req *http.Request) {
 	presenter := &postPresenter{
 		a.blog,
+		"",
 		"",
 		"",
 		nil,
@@ -28,7 +30,7 @@ func (a *App) newPostDisplayHandler(rw http.ResponseWriter, req *http.Request) {
 
 func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 	session, _ := a.store.Get(req, "session")
-	title, body := req.FormValue("title"), req.FormValue("body")
+	title, body, short := req.FormValue("title"), req.FormValue("body"), req.FormValue("short")
 	if title == "" || body == "" {
 		session.AddFlash("Post title or body can't be left empty!")
 		session.Save(req, rw)
@@ -38,12 +40,14 @@ func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 			a.blog,
 			title,
 			body,
+			short,
 			fs,
 		}
 		a.rndr.HTML(rw, http.StatusOK, "newpost", presenter)
 	}
 	post := a.blog.NewPost(title,
 		[]byte(body),
+		short,
 		false,
 		time.Now(),
 		time.Now())
@@ -65,8 +69,9 @@ func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 
 		presenter := &postPresenter{
 			a.blog,
-			string(post.Body),
 			post.Title,
+			string(post.Body),
+			post.Short,
 			fs,
 		}
 		a.rndr.HTML(rw, http.StatusOK, "newpost", presenter)
@@ -116,7 +121,7 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	title, body := req.FormValue("title"), req.FormValue("body")
+	title, body, short := req.FormValue("title"), req.FormValue("body"), req.FormValue("short")
 	if title == "" || body == "" {
 		session.AddFlash("Post title or body can't be left empty!")
 		session.Save(req, rw)
@@ -127,6 +132,7 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 			*goblawg.Post
 			Title    string
 			Body     string
+			Short    string
 			BlogLink string
 			Name     string
 			Flashes  []interface{}
@@ -134,6 +140,7 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 			oldPost,
 			title,
 			body,
+			short,
 			a.blog.Link,
 			a.blog.Name,
 			fs,
@@ -142,7 +149,7 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 		a.rndr.HTML(rw, http.StatusOK, "edit", presenter)
 		return
 	}
-	newPost := a.blog.NewPost(title, []byte(body), false, oldPost.Time, time.Now())
+	newPost := a.blog.NewPost(title, []byte(body), short, false, oldPost.Time, time.Now())
 	if req.FormValue("draft") == "true" {
 		newPost.IsDraft = true
 	}
