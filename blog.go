@@ -114,6 +114,8 @@ func (b *Blog) getPostsWithDraft(drafts bool) []*Post {
 				ps = append(ps, p)
 			}
 		}
+	} else {
+		ps = b.Posts
 	}
 	sort.Sort(sort.Reverse(ByTime(ps)))
 	return ps
