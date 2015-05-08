@@ -190,10 +190,11 @@ func (a *App) generateHandler(rw http.ResponseWriter, req *http.Request) {
 	for _, e := range errors {
 		if e == nil {
 			continue
+		} else {
+			session.AddFlash(fmt.Sprintf("Generate site error: %v", e))
+			session.Save(req, rw)
+			noErrors = false
 		}
-		session.AddFlash(fmt.Sprintf("Unable to generate site: %v", e))
-		session.Save(req, rw)
-		noErrors = false
 	}
 
 	if noErrors {
