@@ -7,15 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
 
-    <link href='./css/normalize.css' type='text/css' rel='stylesheet' />
-    <link href='./css/foundation.min.css' type='text/css' rel='stylesheet' />
+    <link href='/static/css/normalize.css' type='text/css' rel='stylesheet' />
+    <link href='/static/css/foundation.min.css' type='text/css' rel='stylesheet' />
 
-    <link href='./css/style.css' type='text/css' rel='stylesheet' />
+    <link href='/static/css/style.css' type='text/css' rel='stylesheet' />
 
-    <script src="./js/vendor/modernizr.js"></script>
-    <script type="text/javascript" src="//use.typekit.net/nlh5hzh.js"></script>
-    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-  </head>
+    <script src="/static/js/vendor/modernizr.js"></script>
+    <script async type="text/javascript" src="//use.typekit.net/nlh5hzh.js" onload="try{Typekit.load();}catch(e){}"></script>
+    </head>
   <body>
      <div class='row'>
       <header class='small-12 columns'>
@@ -62,19 +61,14 @@
           </div>
         </div>
         <div class='row'>
-          <div class='small-12 medium-4 columns essay'>
-            <h2><a href="/">Because Asia</a></h2>
-            <p>If we say that the last 20 years of the Internet belonged to the West, the most interesting problems in the next 20 that can solved by Software will be found here in the East.</p>
-          </div>
-          <div class='small-12 medium-4 columns essay'>
-            <h2><a href="/">Negative Knowledge and Success Stories</a></h2>
-            <p>Or, why business books mostly suck.</p>
-
-          </div>
-          <div class='small-12 medium-4 columns essay'>
-            <h2><a href="/">Love in the Internet Age</a></h2>
-            <p>What is digital isn't always what is real.</p> 
-          </div>
+          {{ with $posts := subslice .Posts 0 3 }}
+            {{ range $posts }}
+              <div class='small-12 medium-4 columns essay'>
+                <h2><a href="/{{ .Link }}">{{ .Title }}</a></h2>
+                <p>{{ .Short }}</p>
+              </div>
+            {{ end }}
+          {{ end }}
         </div>
         <hr/>
         <div class="row">

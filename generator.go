@@ -79,14 +79,18 @@ func (b *Blog) GeneratePostsWithTemplate(tmpl string) []error {
 		// Generate the HTML and write to file
 		if b.LastModified.Before(post.LastModified) || b.LastModified.Equal(post.LastModified) {
 			filepath = path.Join(filepath, "index.html")
-			file, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0776)
+			file, err := os.OpenFile(filepath, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0755)
 			defer file.Close()
 			if err != nil {
 				errors = append(errors, err)
 				continue
 			}
 
-			err = t.Execute(file, post)
+			bp := struct {
+				*Post
+				*Blog
+			}{post, b}
+			err = t.ExecuteTemplate(file, tmpl, bp)
 			if err != nil {
 				errors = append(errors, err)
 				continue
@@ -128,7 +132,7 @@ func (b *Blog) GenerateRSS() error {
 		return err
 	}
 
-	err = ioutil.WriteFile(path.Join(b.OutDir, "feed.rss"), []byte(rss), 0776)
+	err = ioutil.WriteFile(path.Join(b.OutDir, "feed.rss"), []byte(rss), 0755)
 	if err != nil {
 		return err
 	}
@@ -178,7 +182,7 @@ func (b *Blog) GenerateSitePages() []error {
 			}
 
 			oPath := path.Join(b.OutDir, folder, "index.html")
-			f, err := os.OpenFile(oPath, os.O_RDWR|os.O_CREATE, 0776)
+			f, err := os.OpenFile(oPath, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0755)
 			if err != nil {
 				errors = append(errors, err)
 				continue
@@ -242,7 +246,7 @@ func createDirIfNotExist(dirpath string) error {
 	_, err := os.Stat(dirpath)
 	// The directory doesn't yet exist
 	if err != nil && os.IsNotExist(err) {
-		dirErr := os.Mkdir(dirpath, 0776)
+		dirErr := os.Mkdir(dirpath, 0755)
 		if dirErr != nil {
 			return dirErr
 		}

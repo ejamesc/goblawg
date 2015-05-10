@@ -39,8 +39,10 @@ func main() {
 		Layout:     "base",
 		Funcs: []template.FuncMap{
 			template.FuncMap{
-				"fdate": goblawg.DateFmt,
-				"md":    goblawg.Markdown,
+				"fdate":    goblawg.DateFmt,
+				"md":       goblawg.Markdown,
+				"subslice": goblawg.Subslice,
+				"is_even":  goblawg.IsEven,
 			},
 		},
 	})

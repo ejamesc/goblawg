@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
 
-    <link href='./static/css/normalize.css' type='text/css' rel='stylesheet' />
-    <link href='./static/css/foundation.min.css' type='text/css' rel='stylesheet' />
+    <link href='/static/css/normalize.css' type='text/css' rel='stylesheet' />
+    <link href='/static/css/foundation.min.css' type='text/css' rel='stylesheet' />
 
-    <link href='./static/css/style.css' type='text/css' rel='stylesheet' />
+    <link href='/static/css/style.css' type='text/css' rel='stylesheet' />
 
-    <script src="./static/js/vendor/modernizr.js"></script>
+    <script src="/static/js/vendor/modernizr.js"></script>
     <script async type="text/javascript" src="//use.typekit.net/nlh5hzh.js" onload="try{Typekit.load();}catch(e){}"></script>
   </head>
     <body>
@@ -46,6 +46,7 @@
       <div class="small-12 columns heading-div">
         <h2 class='heading'>essays</h2> <span class="rss"><a href="/rss">&nbsp;&nbsp;(rss)</a></span>
       </div>
+    </div>
       {{ with $posts := subslice .Posts 0 6 }}
         {{ range $i, $p := $posts }}
           {{ if is_even $i }}<div class='row'>{{ end }}
@@ -55,7 +56,8 @@
           </div>
           {{ if not (is_even $i) }}</div>{{ end }}
         {{ end }}
-      {{ end}} 
+      {{ end }} 
+      <div class='row'>
        <div class='small-12 columns text-right'>
         <p><a href='/essays' class="more-essays-link">More essays &rarr;</a></p>
       </div>

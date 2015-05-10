@@ -1,6 +1,7 @@
 package goblawg
 
 import (
+	"html/template"
 	"time"
 
 	"github.com/russross/blackfriday"
@@ -8,9 +9,9 @@ import (
 
 /* Template functions
 * */
-func Markdown(input []byte) string {
+func Markdown(input []byte) template.HTML {
 	output := blackfriday.MarkdownCommon(input)
-	return string(output)
+	return template.HTML(string(output))
 }
 
 func DateFmt(tt time.Time) string {
