@@ -47,39 +47,17 @@
       <div class="small-12 columns heading-div">
         <h2 class='heading'>essays</h2> <span class="rss"><a href="/rss">&nbsp;&nbsp;(rss)</a></span>
       </div>
-      <div class='small-12 medium-6 columns essay'>
-        <h2><a href="/">Leverage</a></h2>
-        <p>Technology gives leverage to people who want to change the world.</p>
-      </div>
-    
-      <div class='small-12 medium-6 columns essay'>
-        <h2><a href="/">Actions Speak Louder Than Words</a></h2>
-        <p>For builders, we are our own worst liars.</p>
-      </div>
-    </div>
-    <div class='row'>
-      <div class='small-12 medium-6 columns essay'>
-        <h2><a href="/">Because Asia</a></h2>
-        <p>If we say that the last 20 years of the Internet belonged to the West, the most interesting problems in the next 20 that can solved by Software will be found here in the East.</p>
-      </div>
-    
-      <div class='small-12 medium-6 columns essay'>
-        <h2><a href="/">Negative Knowledge and Success Stories</a></h2>
-        <p>Or, why business books mostly suck.</p>
-      </div>
-    </div>
-    <div class='row'>
-      <div class='small-12 medium-6 columns essay'>
-        <h2><a href="/">Love in the Internet Age</a></h2>
-        <p>What is digital isn't always what is real.</p>
-      </div>
-    
-      <div class='small-12 medium-6 columns essay'>
-        <h2><a href="/">The Most Important Class I Took in NUS</a></h2>
-        <p>I studied Computer Science at the National University of Singapore. The most important class I took that had nothing to do with my major.</p>
-      </div>
-    </div>
-    <div class='small-12 columns text-right'>
+      {{ with $posts := subslice .Posts 0 6 }}
+        {{ range $i, $p := $posts }}
+          {{ if is_even $i }}<div class='row'>{{ end }}
+          <div class='small-12 medium-6 columns essay'>
+            <h2><a href="{{ .Link }}">{{ .Title }}</a></h2>
+            <p>{{ .Short | html }}</p>
+          </div>
+          {{ if not (is_even $i) }}</div>{{ end }}
+        {{ end }}
+      {{ end}} 
+       <div class='small-12 columns text-right'>
       <p><a href='/' class="more-essays-link">More essays &rarr;</a></p>
     </div>
     <hr/>
