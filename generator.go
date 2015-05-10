@@ -11,6 +11,7 @@ import (
 
 	"github.com/gorilla/feeds"
 	"github.com/kardianos/osext"
+	"github.com/termie/go-shutil"
 )
 
 var funcMap = template.FuncMap{
@@ -25,7 +26,7 @@ func (b *Blog) GenerateSite() []error {
 	errors := []error{}
 
 	pErrs := b.GeneratePostsWithTemplate("essay.html")
-	if pErrs != nil {
+	if len(pErrs) > 0 {
 		errors = append(errors, pErrs...)
 	}
 
@@ -35,8 +36,13 @@ func (b *Blog) GenerateSite() []error {
 	}
 
 	pageErrors := b.GenerateSitePages()
-	if pageErrors != nil {
+	if len(pageErrors) > 0 {
 		errors = append(errors, pageErrors...)
+	}
+
+	cpErr := b.CopyStatic()
+	if cpErr != nil {
+		errors = append(errors, cpErr)
 	}
 
 	b.WriteInfoJSON()
@@ -194,6 +200,43 @@ func (b *Blog) GenerateSitePages() []error {
 	b.LastModified = time.Now()
 	return errors
 }
+
+func (b *Blog) CopyStatic() error {
+	extDir, _ := osext.ExecutableFolder()
+	staticPath := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "static")
+
+	// CopyTree demands that the destination folder not exist
+	// If it does, we delete it
+	outDir := path.Join(b.OutDir, "static")
+	_, err := os.Stat(outDir)
+	if err == nil {
+		err = os.RemoveAll(outDir)
+		if err != nil {
+			return err
+		}
+	} else if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+
+	// CopyTree options:
+	// Symlinks - if true, symbolic links copied, if false symlinked files copied
+	// IgnoreDanglingSymlinks - supress error thrown when symlink links to missing file
+	// Optional CopyFunction
+	// Optional Ignore function
+	options := &shutil.CopyTreeOptions{
+		Symlinks:               false,
+		IgnoreDanglingSymlinks: true,
+		CopyFunction:           shutil.Copy,
+		Ignore:                 nil,
+	}
+	err = shutil.CopyTree(staticPath, outDir, options)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Helpers
 
 func createDirIfNotExist(dirpath string) error {
 	_, err := os.Stat(dirpath)

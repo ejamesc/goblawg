@@ -1,0 +1,178 @@
+/* Styles
+ * Among all these poems, a few
+ * of the best recite old jokes anew.
+ * But there's one I don't see,
+ * And the reason must be:
+ * In Russia, the limerick writes you.
+ * 
+ */
+
+body { 
+  font-family: 'adelle', Georgia, serif; 
+}
+
+p, li { 
+  color: rgba(0, 0, 0, 0.8);
+  line-height: 140%; 
+  font-size: 1.25rem; 
+  font-family: 'calluna', Georgia, serif; 
+}
+
+h1, h2, h3, h4, h5 { font-family: 'adelle', Georgia, serif; }
+
+p a {
+  color: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px dotted #555;
+}
+
+/* Header
+ *
+ */
+header {
+  border-bottom: 1px solid #bbb;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  margin-top: 3px; 
+}
+
+header h1 a { color: #333; }
+header h1 a:hover { text-decoration: none; color: #004f77; }
+
+nav ul {
+  list-style: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+/* 
+ * Front Page Styles 
+ */
+
+.lede {
+  font-size: 1.75rem;
+}
+
+.heading {
+  font-size: 1.55rem;
+  color: #999;
+  display: inline;
+}
+
+.heading-div {
+  margin-bottom: 10px;
+}
+
+.rss a { font-size: 1.2rem; color: #999;}
+.rss a:hover { color: #FF8800; }
+
+.essay {
+  margin-top: 10px;
+}
+
+.essay h2 { line-height: 90%; }
+.essay h2 a { font-size: 1.5rem; color: #005a88; }
+.essay h2 a:hover { border-bottom: 1px dotted #aaa; color: #008cba; }
+.essay p { font-size: 1rem; }
+
+.more-essays-link {
+  border-bottom: none;
+  color: #005a88;
+}
+
+.copylink {
+  margin-right: 20px;
+  line-height:100%;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.copylink a:hover {
+  text-decoration: none;
+  color: #333;
+}
+
+.blue a { color: #005a88 }
+.darker a { color: #003855 }
+.red a { color: #CC4100 }
+.green a { color: #51a351 }
+
+.email-link {
+  font-size: 1.4rem;
+}
+
+.social-links {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'adelle', Georgia, serif;
+}
+
+.social-links a { color: #333; border: none; }
+.social-links a:hover { color: #CC4100; }
+
+footer {
+  margin-bottom: 40px;
+  font-size: 0.9rem;
+}
+
+/*
+ * Essay Styles
+ */
+
+.essay-date {
+  color: #999;
+}
+
+.subscribe-div {
+  background: #ecfaff;
+  padding: 15px;
+}
+
+.subscribe-div p {
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+.blue-background {
+  background-color: #006599;
+}
+
+/*
+ * Code Styles
+ */
+
+.code {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dotted #ddd;
+}
+
+.code h2 { line-height: 100%; }
+.code h2 a { font-size: 1.6rem; color: #005a88; }
+.code h2 a:hover { border-bottom: 1px dotted #aaa; color: #008cba; }
+.code p { font-size: 1.1rem; }
+
+/* Phones */
+@media only screen {
+  .copylink {
+    font-size: 3rem;
+  }
+}
+
+/* Tablets */
+@media only screen and (min-width: 40.063em) {
+  .copylink {
+    font-size:2.6rem;
+  }
+} 
+
+/* Screens */
+@media only screen and (min-width: 64.063em) {
+  .copylink {
+    font-size: 4.6rem;
+  }
+} /* min-width 1025px, large screens */

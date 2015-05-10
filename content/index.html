@@ -7,14 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
 
-    <link href='./css/normalize.css' type='text/css' rel='stylesheet' />
-    <link href='./css/foundation.min.css' type='text/css' rel='stylesheet' />
+    <link href='./static/css/normalize.css' type='text/css' rel='stylesheet' />
+    <link href='./static/css/foundation.min.css' type='text/css' rel='stylesheet' />
 
-    <link href='./css/style.css' type='text/css' rel='stylesheet' />
+    <link href='./static/css/style.css' type='text/css' rel='stylesheet' />
 
-    <script src="./js/vendor/modernizr.js"></script>
-    <script type="text/javascript" src="//use.typekit.net/nlh5hzh.js"></script>
-    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    <script src="./static/js/vendor/modernizr.js"></script>
+    <script async type="text/javascript" src="//use.typekit.net/nlh5hzh.js" onload="try{Typekit.load();}catch(e){}"></script>
   </head>
     <body>
     <div class='row'>
@@ -58,7 +57,8 @@
         {{ end }}
       {{ end}} 
        <div class='small-12 columns text-right'>
-      <p><a href='/' class="more-essays-link">More essays &rarr;</a></p>
+        <p><a href='/essays' class="more-essays-link">More essays &rarr;</a></p>
+      </div>
     </div>
     <hr/>
     <div class='row'>
@@ -66,12 +66,12 @@
         <h2 class='heading'>work</h2>
       </div>
       <div class='small-12 medium-6 columns'>
-        <h2 class='copylink'><a href="/">code &raquo;</a></h2>
-        <h2 class='copylink blue'><a href="/">design &raquo;</a></h2>
+        <h2 class='copylink'><a href="/code">code &raquo;</a></h2>
+        <h2 class='copylink blue'><a href="/design">design &raquo;</a></h2>
       </div>
       <div class='small-12 medium-6 columns'>
-        <h2 class='copylink green'><a href="/">photos &raquo;</a></h2>
-        <h2 class='copylink red'><a href="/">pranks &raquo;</a></h2>
+        <h2 class='copylink green'><a href="/photos">photos &raquo;</a></h2>
+        <h2 class='copylink red'><a href="/pranks">pranks &raquo;</a></h2>
       </div>
     </div>
     <hr/>
@@ -97,7 +97,6 @@
       </div>
     </div>
     <hr/>
-
     <div class="row">
       <footer class='small-12 columns text-center'>
         &copy; forever Eli James. Built on goblawg. 
