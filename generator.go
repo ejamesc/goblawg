@@ -51,7 +51,7 @@ func (b *Blog) GenerateSite() []error {
 }
 
 // Generate blog posts with the given template
-// Additional templates provided are compiled parts.
+// Additional templates provided are compiled partials.
 func (b *Blog) GeneratePostsWithTemplate(mainTemplate string, tmpls ...string) []error {
 	errors := []error{}
 	extDir, _ := osext.ExecutableFolder()

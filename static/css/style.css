@@ -119,6 +119,17 @@ footer {
   font-size: 0.9rem;
 }
 
+footer a { color: #333; }
+
+.footer-icon { 
+  height: 50px; 
+  display: block;
+  clear: both;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2rem;
+}
+
 /*
  * Essay Styles
  */
