@@ -35,7 +35,7 @@ func (b *Blog) GenerateSite() []error {
 		errors = append(errors, rssErr)
 	}
 
-	pageErrors := b.GenerateSitePages("header.html", "footer.html")
+	pageErrors := b.GenerateSitePages("header.html", "footer.html", "otherwork.html")
 	if len(pageErrors) > 0 {
 		errors = append(errors, pageErrors...)
 	}
