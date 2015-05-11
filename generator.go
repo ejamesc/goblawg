@@ -25,7 +25,7 @@ var funcMap = template.FuncMap{
 func (b *Blog) GenerateSite() []error {
 	errors := []error{}
 
-	pErrs := b.GeneratePostsWithTemplate("essay.html")
+	pErrs := b.GeneratePostsWithTemplate("essay.html", "header.html", "footer.html")
 	if len(pErrs) > 0 {
 		errors = append(errors, pErrs...)
 	}
@@ -35,7 +35,7 @@ func (b *Blog) GenerateSite() []error {
 		errors = append(errors, rssErr)
 	}
 
-	pageErrors := b.GenerateSitePages()
+	pageErrors := b.GenerateSitePages("header.html", "footer.html")
 	if len(pageErrors) > 0 {
 		errors = append(errors, pageErrors...)
 	}
@@ -50,11 +50,18 @@ func (b *Blog) GenerateSite() []error {
 	return errors
 }
 
-func (b *Blog) GeneratePostsWithTemplate(tmpl string) []error {
+// Generate blog posts with the given template
+// Additional templates provided are compiled parts.
+func (b *Blog) GeneratePostsWithTemplate(mainTemplate string, tmpls ...string) []error {
 	errors := []error{}
 	extDir, _ := osext.ExecutableFolder()
-	tmpDir := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "templates")
-	t := template.Must(template.New(tmpl).Funcs(funcMap).ParseFiles(path.Join(tmpDir, tmpl)))
+	tmpls = append(tmpls, mainTemplate)
+	templatePaths := []string{}
+	for _, tmpl := range tmpls {
+		tmpDir := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "templates", tmpl)
+		templatePaths = append(templatePaths, tmpDir)
+	}
+	t := template.Must(template.New(mainTemplate).Funcs(funcMap).ParseFiles(templatePaths...))
 
 	for _, post := range b.Posts {
 		filepath := post.Link
@@ -90,7 +97,7 @@ func (b *Blog) GeneratePostsWithTemplate(tmpl string) []error {
 				*Post
 				*Blog
 			}{post, b}
-			err = t.ExecuteTemplate(file, tmpl, bp)
+			err = t.ExecuteTemplate(file, mainTemplate, bp)
 			if err != nil {
 				errors = append(errors, err)
 				continue
@@ -143,12 +150,21 @@ func (b *Blog) GenerateRSS() error {
 
 // Generate the rest of the templates that isn't the blog
 // TODO: Test the fuck out of this.
-func (b *Blog) GenerateSitePages() []error {
+func (b *Blog) GenerateSitePages(templates ...string) []error {
 	errors := []error{}
 	fil, err := ioutil.ReadDir(b.InDir)
 	if err != nil {
 		errors = append(errors, err)
 		return errors
+	}
+
+	tmplPaths := []string{}
+	if len(templates) > 0 {
+		extDir, _ := osext.ExecutableFolder()
+		for _, tmpl := range templates {
+			tp := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "templates", tmpl)
+			tmplPaths = append(tmplPaths, tp)
+		}
 	}
 
 	for _, fi := range fil {
@@ -159,7 +175,8 @@ func (b *Blog) GenerateSitePages() []error {
 			}
 
 			t := template.New(fi.Name()).Funcs(funcMap)
-			t, err = t.ParseFiles(path.Join(b.InDir, fi.Name()))
+			tmplPaths := append(tmplPaths, path.Join(b.InDir, fi.Name()))
+			t, err = t.ParseFiles(tmplPaths...)
 			if err != nil {
 				errors = append(errors, err)
 				continue
@@ -205,6 +222,7 @@ func (b *Blog) GenerateSitePages() []error {
 	return errors
 }
 
+// Copy the entire static folder recursively to OutDir
 func (b *Blog) CopyStatic() error {
 	extDir, _ := osext.ExecutableFolder()
 	staticPath := path.Join(extDir, "../src/github.com/ejamesc/goblawg", "static")

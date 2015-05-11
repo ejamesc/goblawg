@@ -1,35 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-  <title>{{ .Title }}</title>
-    <meta content='Eli James' name='author' />
-    <meta content='Personal site of Eli James' name='description' />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-
-    <link href='/static/css/normalize.css' type='text/css' rel='stylesheet' />
-    <link href='/static/css/foundation.min.css' type='text/css' rel='stylesheet' />
-
-    <link href='/static/css/style.css' type='text/css' rel='stylesheet' />
-
-    <script src="/static/js/vendor/modernizr.js"></script>
-    <script async type="text/javascript" src="//use.typekit.net/nlh5hzh.js" onload="try{Typekit.load();}catch(e){}"></script>
-    </head>
-  <body>
-     <div class='row'>
-      <header class='small-12 columns'>
-        <h1 class="text-center"><a href='/'>eli james</a></h1>
-        <nav>
-          <ul class="text-center">
-            <li><a href='/about'>about</a></li>
-            <li><a href='/essays'>essays</a></li>
-            <li><a href='/work'>work</a></li>
-            <li><a href='/contact'>contact</a></li>
-            <li><a href="http://metacog.elijames.org">metacog</a></li>
-          </ul>
-        </nav> 
-      </header>
-    </div>
+{{ template "header" . }}
     <div class='row'><!--outer-row-->
       <div class="small-12 medium-10 medium-offset-1 columns">
         <div class='row'>
@@ -70,13 +39,4 @@
             {{ end }}
           {{ end }}
         </div>
-        <hr/>
-        <div class="row">
-          <footer class='small-12 columns text-center'>
-            &copy; forever Eli James. Built on goblawg. 
-          </footer>
-        </div>
-      </div><!--medium-10--> 
-    </div><!--outer-row-->
-    </body>
-    </html>
+{{ template "footer" }}
