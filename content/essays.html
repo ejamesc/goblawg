@@ -1,0 +1,16 @@
+{{ template "header" . }}
+  <div class='row'><!--outer-row-->
+    <div class="small-12 medium-10 medium-offset-1 columns">
+      <div class='row'>
+        <div class='small-12 columns'>
+          <h2><em>Essays</em></h2>
+        </div>
+        {{ range .Posts }}
+        <div class='small-12 columns code'>
+          <h2><a href='/{{ .Link }}'>{{ .Title }}</a></h2>
+          <p>{{ .Short | html }}</p>
+        </div>
+        {{ end }}
+      </div>
+{{ template "otherwork" }} 
+{{ template "footer" }}
