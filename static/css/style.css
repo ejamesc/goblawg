@@ -167,6 +167,18 @@ footer a { color: #333; }
 .code h2 a:hover { border-bottom: 1px dotted #aaa; color: #008cba; }
 .code p { font-size: 1.1rem; }
 
+/*
+ * Design Styles
+ */
+
+.design {
+  margin-bottom: 15px;
+}
+
+.design img {
+  border: 1px solid #ccc;
+}
+
 /* Phones */
 @media only screen {
   .copylink {
