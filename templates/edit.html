@@ -38,7 +38,11 @@
   </div>
   <div class='small-12 medium-6 columns text-right save-details'>
     <a href="#">Save</a> - <em>Last saved at {{ .LastModified | fdate }}</em> <br/>
-    Status: {{ if .IsDraft }}<span class="label secondary round">Draft</span> {{ else }} <span class="label round">Published</span> {{ end }}
+    <h5>Set draft</h5> 
+      <div class='switch right'>
+        <input id="isdraft" name="isdraft" type="checkbox" {{ if .IsDraft }}checked{{ end }}>
+        <label for="isdraft">Draft? </label>
+      </div>
     <div class="row">
       <br/>
       <div class="small-offset-5 small-2 columns">

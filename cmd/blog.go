@@ -14,6 +14,7 @@ type postPresenter struct {
 	TitleValue string
 	BodyValue  string
 	ShortValue string
+	IsDraft    bool
 	Flashes    []interface{}
 }
 
@@ -23,6 +24,7 @@ func (a *App) newPostDisplayHandler(rw http.ResponseWriter, req *http.Request) {
 		"",
 		"",
 		"",
+		false,
 		nil,
 	}
 	a.rndr.HTML(rw, http.StatusOK, "newpost", presenter)
@@ -41,6 +43,7 @@ func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 			title,
 			body,
 			short,
+			false,
 			fs,
 		}
 		a.rndr.HTML(rw, http.StatusOK, "newpost", presenter)
@@ -52,7 +55,7 @@ func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 		time.Now(),
 		time.Now())
 
-	if req.FormValue("draft") == "true" {
+	if req.FormValue("isdraft") == "on" {
 		post.IsDraft = true
 	}
 
@@ -72,6 +75,7 @@ func (a *App) newPostHandler(rw http.ResponseWriter, req *http.Request) {
 			post.Title,
 			string(post.Body),
 			post.Short,
+			post.IsDraft,
 			fs,
 		}
 		a.rndr.HTML(rw, http.StatusOK, "newpost", presenter)
@@ -150,7 +154,7 @@ func (a *App) editPostHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	newPost := a.blog.NewPost(title, []byte(body), short, false, oldPost.Time, time.Now())
-	if req.FormValue("draft") == "true" {
+	if req.FormValue("isdraft") == "on" {
 		newPost.IsDraft = true
 	}
 	// TODO: Change timestamp later, to check from form
