@@ -1,0 +1,36 @@
+{
+	"ImportPath": "github.com/ejamesc/goblawg",
+	"GoVersion": "go1.3.3",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go.net/html",
+			"Comment": "null-128",
+			"Rev": "9c33002573cb03309e20978369b0536f4f00b24d"
+		},
+		{
+			"ImportPath": "github.com/gorilla/feeds",
+			"Rev": "2e133eb352fab1ff3569ee169e9a3a94f69c9081"
+		},
+		{
+			"ImportPath": "github.com/kardianos/osext",
+			"Rev": "8fef92e41e22a70e700a96b29f066cda30ea24ef"
+		},
+		{
+			"ImportPath": "github.com/kennygrant/sanitize",
+			"Rev": "5d1f63acd380bdb21381cdf6f4f445e1c0bb4977"
+		},
+		{
+			"ImportPath": "github.com/russross/blackfriday",
+			"Comment": "v1.2-10-g44a39c1",
+			"Rev": "44a39c16c6b85809f8c2663bdb8ddbced1ffdee8"
+		},
+		{
+			"ImportPath": "github.com/termie/go-shutil",
+			"Rev": "bcacb06fecaeec8dc42af03c87c6949f4a05c74c"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "b6fdb7d8a4ccefede406f8fe0f017fb58265054c"
+		}
+	]
+}
