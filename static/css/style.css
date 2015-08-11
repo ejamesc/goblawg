@@ -1,4 +1,5 @@
 /* Styles
+ * MANDATORY LIMERICK:
  * Among all these poems, a few
  * of the best recite old jokes anew.
  * But there's one I don't see,
@@ -6,6 +7,11 @@
  * In Russia, the limerick writes you.
  * 
  */
+
+@font-face {font-family: 'calluna';src: url('/static/fonts/2EE5D8_0_0.eot');src: url('/static/fonts/2EE5D8_0_0.eot?#iefix') format('embedded-opentype'),url('/static/fonts/2EE5D8_0_0.woff2') format('woff2'),url('/static/fonts/2EE5D8_0_0.woff') format('woff'),url('/static/fonts/2EE5D8_0_0.ttf') format('truetype');}
+
+@font-face {font-family: 'adelle';src: url('/static/fonts/adelle.eot');src: url('/static/fonts/adelle.eot?#iefix') format('embedded-opentype'),url('/static/fonts/adelle.woff2') format('woff2'),url('/static/fonts/adelle.woff') format('woff'),url('/static/fonts/adelle.ttf') format('truetype');}
+
 
 body { 
   font-family: 'adelle', Georgia, serif; 
