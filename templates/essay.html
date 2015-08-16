@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class='row'>
-          {{ with $posts := subslice .Posts 0 3 }}
+          {{ with $posts := random_posts .Posts .Post.Link 3 }}
             {{ range $posts }}
               <div class='small-12 medium-4 columns essay'>
                 <h2><a href="/{{ .Link }}">{{ .Title }}</a></h2>

@@ -2,6 +2,7 @@ package goblawg
 
 import (
 	"html/template"
+	"math/rand"
 	"time"
 
 	"github.com/russross/blackfriday"
@@ -34,4 +35,20 @@ func Subslice(a []*Post, start, end int) []*Post {
 	} else {
 		return a[start:end]
 	}
+}
+
+func RandomPosts(a []*Post, currPostURL string, numPosts int) []*Post {
+	perm := rand.Perm(len(a))
+	res := []*Post{}
+	for i := range perm {
+		v := perm[i]
+		if a[v].Link != currPostURL {
+			res = append(res, a[v])
+		}
+		if len(res) >= numPosts {
+			break
+		}
+	}
+
+	return res
 }

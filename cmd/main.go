@@ -3,8 +3,10 @@ package main
 import (
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"path"
+	"time"
 
 	"github.com/codegangsta/negroni"
 	"github.com/ejamesc/goblawg"
@@ -26,6 +28,9 @@ type App struct {
 }
 
 func main() {
+	// We'll use random numbers to get random posts
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	b, err := goblawg.NewBlog(path.Join(currDir, "settings.json"))
 	if err != nil {
 		panic(err)
@@ -39,10 +44,11 @@ func main() {
 		Layout:     "base",
 		Funcs: []template.FuncMap{
 			template.FuncMap{
-				"fdate":    goblawg.DateFmt,
-				"md":       goblawg.Markdown,
-				"subslice": goblawg.Subslice,
-				"is_even":  goblawg.IsEven,
+				"fdate":        goblawg.DateFmt,
+				"md":           goblawg.Markdown,
+				"subslice":     goblawg.Subslice,
+				"is_even":      goblawg.IsEven,
+				"random_posts": goblawg.RandomPosts,
 			},
 		},
 	})

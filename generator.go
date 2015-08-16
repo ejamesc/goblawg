@@ -15,10 +15,11 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"fdate":    DateFmt,
-	"md":       Markdown,
-	"is_even":  IsEven,
-	"subslice": Subslice,
+	"fdate":        DateFmt,
+	"md":           Markdown,
+	"is_even":      IsEven,
+	"subslice":     Subslice,
+	"random_posts": RandomPosts,
 }
 
 /* Contains all the generator functions for Blog */
