@@ -26,7 +26,7 @@ var funcMap = template.FuncMap{
 func (b *Blog) GenerateSite() []error {
 	errors := []error{}
 
-	pErrs := b.GeneratePostsWithTemplate("essay.html", "header.html", "footer.html")
+	pErrs := b.GeneratePostsWithTemplate("essay.html", "essay-header.html", "footer.html")
 	if len(pErrs) > 0 {
 		errors = append(errors, pErrs...)
 	}
