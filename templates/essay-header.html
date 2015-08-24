@@ -5,6 +5,8 @@
   <title>{{ .Title }} | {{ .Name }} &middot; {{ .Description }}</title>
     <meta content='{{ .Name }}' name='author' />
     <meta content='{{ .Description }}' name='description' />
+    <meta itemprop="name" content="{{ .Title }}" />
+    <meta itemprop="description" content="{{ .Short }}" />
     <meta property="og:title" content="{{ .Title }}" />
     <meta property="og:description" content="{{ .Short }}" />
     <meta property="og:type" content="article" />
