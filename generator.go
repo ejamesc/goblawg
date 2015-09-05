@@ -11,6 +11,7 @@ import (
 
 	"github.com/gorilla/feeds"
 	"github.com/kardianos/osext"
+	"github.com/russross/blackfriday"
 	"github.com/termie/go-shutil"
 )
 
@@ -123,14 +124,11 @@ func (b *Blog) GenerateRSS() error {
 
 	feed.Items = []*feeds.Item{}
 	for _, p := range b.GetPublishedPosts() {
-		desc := string(p.Body)
-		if len(desc) > 120 {
-			desc = desc[:120] + "..."
-		}
+		fullPost := blackfriday.MarkdownCommon(p.Body)
 		f := &feeds.Item{
 			Title:       p.Title,
 			Link:        &feeds.Link{Href: b.Link + "/" + p.Link + "/"},
-			Description: desc,
+			Description: string(fullPost),
 			Created:     p.Time,
 		}
 		feed.Items = append(feed.Items, f)
