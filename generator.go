@@ -88,10 +88,11 @@ func (b *Blog) GeneratePostsWithTemplate(mainTemplate string, tmpls ...string) [
 		if b.LastModified.Before(post.LastModified) || b.LastModified.Equal(post.LastModified) {
 			filepath = path.Join(filepath, "index.html")
 			file, err := os.OpenFile(filepath, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0755)
-			defer file.Close()
 			if err != nil {
 				errors = append(errors, err)
 				continue
+			} else {
+				defer file.Close()
 			}
 
 			bp := struct {
