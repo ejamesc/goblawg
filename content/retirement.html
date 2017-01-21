@@ -1,17 +1,152 @@
 {{ template "header" . }}
-  <div class='row'><!--outer-row-->
-    <div class="small-12 medium-10 medium-offset-1 columns">
-      <div class='row'>
-        <div class='small-12 columns'>
-          <h2><em>Cedric's Stupid Retirement Calculator</em></h2>
+<div class='row'><!--outer-row-->
+  <div class="small-12 medium-10 medium-offset-1 columns">
+    <div class='row'>
+      <div class='small-12 columns'>
+        <h2><em>Cedric's Stupid Retirement Calculator</em></h2>
+        <br/>
+      </div>
+    </div>
+    <div class='row collapse'>
+      <div class='small-6 columns'>
+        <p><strong>Upon retirement</strong>, I intend to have</p>
+      </div>
+      <div class='small-4 columns'>
+        <input type='text' id='monthly-retirement-income' placeholder="3000" /> 
+      </div>
+      <div class='small-2 columns'>
+        <span class='postfix radius'>SGD per month</span>
+      </div>
+    </div>
+    <div class='row collapse'>
+      <div class='small-4 columns'>
+        <p>as retirement income for</p>
+      </div>
+      <div class='small-2 columns'>
+        <input type='text' id='years-to-death' placeholder="15" /> 
+      </div>
+      <div class='small-1 columns'>
+        <span class='postfix radius'>years</span>
+      </div>
+      <div class='small-2 small-offset-1 columns'>
+        <p>after I turn</p>
+      </div>
+      <div class='small-2 columns'>
+        <input type='text' id='retirement-age' placeholder="65" /> 
+      </div>
+      <hr/>
+    </div>
+    <div class='row collapse'>
+      <div class='small-7 columns'>
+        <p><strong>Assuming terrible inflation of</strong> &nbsp;<span class="radius secondary label">(avg over past 30 yrs is 1.83%)</span></p>
+      </div>
+      <div class='small-3 columns'>
+        <input type='text' id='inflation-rate' placeholder="3" /> 
+      </div>
+      <div class='small-2 columns'>
+        <span class='postfix radius'>% annually</span>
+      </div>
+    </div>
+    <div class='row collapse'>
+      <div class='small-7 columns'>
+        <p>And my current age of</p>
+      </div>
+      <div class='small-3 columns'>
+        <input type='text' id='curr-age' /> 
+      </div>
+      <div class='small-2 columns'>
+        <span class='postfix radius'>years old</span>
+      </div>
+    </div>
+    <div class='row collapse'>
+      <div class='small-7 columns'>
+        <p>Then what I <em>really</em> need is</p>
+      </div>
+      <div class='small-2 columns'>
+        <h3 id="inflation-adjusted-monthly">0</h3>
+      </div>
+      <div class='small-3 columns'>
+        <span class='postfix radius'>SGD/mo after inflation</span>
+      </div>
+      <div class='row collapse'>
+        <div class='small-7 columns'>
+          <p>Which means I need to have</p>
+        </div>
+        <div class='small-2 columns'>
+          <h3 id="inflation-adjusted-total">0</h3>
+        </div>
+        <div class='small-3 columns'>
+          <span class='postfix radius'>SGD saved up for retirement</span>
         </div>
       </div>
-      <div class='row'>
 
-      </div>
-{{ template "footer" . }}
-  </div> <!-- medium-10-->
+      {{ template "footer" . }}
+    </div> <!-- medium-10-->
   </div> <!--outer row-->
-  </body>
+</body>
+<script>
+  const MONTHS_IN_YEAR = 12;
+  //window.onload = function() {
+    var monthlyRetirementIncome, yearsToDeath, retirementAge, inflationRate, currAge, monthlyResult, totalResult;
+    var mri, ytd, ra, ir, ca, mrr, trr;
+
+    mri = document.querySelector('#monthly-retirement-income');
+    ytd = document.querySelector('#years-to-death');
+    ra = document.querySelector('#retirement-age');
+    ir = document.querySelector('#inflation-rate');
+    ca = document.querySelector('#curr-age');
+
+    // Results
+    mrr = document.querySelector("#inflation-adjusted-monthly");
+    trr = document.querySelector("#inflation-adjusted-total");
+
+    function grabValues() {
+      monthlyRetirementIncome = parseInt(mri.value);
+      console.log(monthlyRetirementIncome);
+      yearsToDeath = parseInt(ytd.value);
+      console.log(yearsToDeath);
+      retirementAge = parseInt(ra.value);
+      console.log(retirementAge);
+      inflationRate = parseInt(ir.value);
+      console.log(inflationRate);
+      currAge = parseInt(ca.value);
+      console.log(currAge);
+    }
+
+    function validateValues() {
+      return (
+      typeof(monthlyRetirementIncome) === "number" && monthlyRetirementIncome > 0 &&
+      typeof(yearsToDeath) === "number" && yearsToDeath > 0 &&
+      typeof(retirementAge) === "number" && retirementAge > 0 &&
+      typeof(inflationRate) === "number" && inflationRate > 0 &&
+      typeof(currAge) === "number" && currAge > 0
+      )
+    }
+
+    function numberWithCommas(x) {
+      x = Math.round(x);
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function updateInflation() {
+      grabValues();
+      if (validateValues()) {
+        var yearsToRetirement = retirementAge - currAge;
+        monthlyResult = monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement);
+        mrr.textContent = numberWithCommas(monthlyResult);
+        totalResult = monthlyResult * MONTHS_IN_YEAR * yearsToDeath;
+        trr.textContent = numberWithCommas(totalResult);
+      }
+    }
+
+    mri.onblur = updateInflation;
+    ytd.onblur = updateInflation;
+    ra.onblur = updateInflation;
+    ir.onblur = updateInflation;
+    ca.onblur = updateInflation;
+
+    
+  //}
+</script>
 </html>
 
