@@ -343,18 +343,11 @@
     var v = (totalReturnRate / 100) / 12;
     console.log(v);
 
-    var contrib = 200;
-    var bs, cs, res;
-    res = 0;
-    while (res < totalResult) {
-      bs = baseAmount * Math.pow((1 + v / MONTHS_IN_YEAR), yearsToRetirement * MONTHS_IN_YEAR);
-      cs = contrib * (Math.pow((1 + v / MONTHS_IN_YEAR), yearsToRetirement * MONTHS_IN_YEAR) - 1) / (v / MONTHS_IN_YEAR);
-      res = bs + cs;
-      contrib += 100;
-    }
-    console.log(res);
-    endGoal = res;
-    monthlyGoal = contrib;
+    var bs = baseAmount * Math.pow((1 + totalReturnRate/100), yearsToRetirement);
+    var cs = (Math.pow((1 + totalReturnRate/100), yearsToRetirement) - 1) / (totalReturnRate/100); 
+    var yearlyContribution = (totalResult - bs) / cs;
+    monthlyGoal = yearlyContribution / 12;
+    endGoal = bs + yearlyContribution * cs
     mg.textContent = numberWithCommas(monthlyGoal);
     eg.textContent = numberWithCommas(endGoal);
   }
