@@ -12,7 +12,7 @@
         <p><strong>Upon retirement</strong>, I intend to have</p>
       </div>
       <div class='small-4 columns'>
-        <input type='text' id='monthly-retirement-income' placeholder="3000" /> 
+        <input type='text' id='monthly-retirement-income' placeholder="2000" /> 
       </div>
       <div class='small-2 columns'>
         <span class='postfix radius'>SGD per month</span>
@@ -161,7 +161,7 @@
             <h3>%</h3>
           </div>
           <div class='small-4 small-offset-1 columns'>
-            <p><small><sup>1</sup><em>Obviously</em>, past performance is not an indicator of future performance.</small></p>
+            <p><small><sup>1</sup><em>Obviously</em>, past performance is not an indicator of future returns.</small></p>
           </div>
         </div>
       </div><!-- green-background -->
@@ -198,10 +198,11 @@
       <div class='row collapse'>
         <div class='small-12 columns'>
           <h3>Notes</h3>
-          <p>You shouldn't <em>only</em> look at the average rates of return. Think about your risk profile, and what kind of risks you are willing to be exposed to. Buying more VWRD, for instance, leaves you open to global market risk <em>as well as currency risk of the USD</em>. You want to think about the percentage of your exposure to those risks.</p>
-          <p>This passive portfolio assumes you understand the ideas presented in The Investment Answer (aka passive investing). In order for this to work you will need to: </p>
+          <p>This portfolio shouldn't be the entirety of your retirement strategy. However, it's a simple starting point! If you're Singaporean, your CPF and any real estate you own will also contribute to your retirement planning. You may also supplement this ETF-based strategy with other instruments.</p>
+          <p>You shouldn't <em>only</em> look at the average rates of return. The Investment Answer urges you to think about your risk profile, and what kind of risks you are willing to be exposed to. Buying more VWRD, for instance, leaves you open to global market risk <em>as well as currency risk of the USD</em>. You want to think about the percentage of your exposure to those risks.</p>
+          <p>This passive portfolio assumes you understand the ideas presented in The <a href='https://www.amazon.com/Investment-Answer-Daniel-C-Goldie/dp/B0096ET3S6'>Investment Answer</a> (aka passive investing). In order for this to work you will need to: </p>
           <ul>
-            <li>Rebalance your stock portfolio at least once a year, such that each component returns to the starting percentages. You do this by selling off the ones that do particularly well, or buying more of the ones that are doing poorly, until the $ value of each returns to the starting % of your overall portfolio.</li>
+            <li>Rebalance your portfolio at least once a year, such that each component returns to the starting percentages. You do this by selling off the ones that do particularly well, or buying more of the ones that are doing poorly, until the $ value of each returns to the starting % of your overall portfolio.</li>
             <li>Put in money at a certain interval (e.g. every quarter), rain or shine, stock market crash or bull rush.</li>
             <li>You do this for a very long time, e.g. 3 decades or more.</li>
           </ul>
@@ -216,59 +217,170 @@
 </body>
 <script>
   const MONTHS_IN_YEAR = 12;
-  //window.onload = function() {
-  var monthlyRetirementIncome, yearsToDeath, retirementAge, inflationRate, currAge, monthlyResult, totalResult;
-  var mri, ytd, ra, ir, ca, mrr, trr;
+  const ABF_RETURN = 2.5;
+  const STI_RETURN = 6.58;
+  const VWRD_RETURN = 9.42;
 
-  mri = document.querySelector('#monthly-retirement-income');
-  ytd = document.querySelector('#years-to-death');
-  ra = document.querySelector('#retirement-age');
-  ir = document.querySelector('#inflation-rate');
-  ca = document.querySelector('#curr-age');
+  //window.onload = function() {
+  var monthlyRetirementIncome, yearsToDeath, retirementAge, inflationRate, currAge, monthlyResult, totalResult, baseAmount, abfPercent, stiPercent, vwrdPercent, totalReturnRate, monthlyGoal, endGoal;
+
+  var mri = document.querySelector('#monthly-retirement-income');
+  var ytd = document.querySelector('#years-to-death');
+  var ra = document.querySelector('#retirement-age');
+  var ir = document.querySelector('#inflation-rate');
+  var ca = document.querySelector('#curr-age');
 
   // Results
-  mrr = document.querySelector("#inflation-adjusted-monthly");
-  trr = document.querySelector("#inflation-adjusted-total");
+  var mrr = document.querySelector("#inflation-adjusted-monthly");
+  var trr = document.querySelector("#inflation-adjusted-total");
+
+  // Portfolio percentages
+  var ba = document.querySelector('#base-amount');
+  var abf = document.querySelector('#abf');
+  var sti = document.querySelector('#sti');
+  var vwrd = document.querySelector('#vwrd');
+
+  // Investment Results
+  var tpr = document.querySelector("#total-portfolio-return");
+  var mg = document.querySelector("#monthly-goal");
+  var eg = document.querySelector("#end-goal");
+
 
   function grabValues() {
-  monthlyRetirementIncome = parseInt(mri.value);
-  yearsToDeath = parseInt(ytd.value);
-  retirementAge = parseInt(ra.value);
-  inflationRate = parseInt(ir.value);
-  currAge = parseInt(ca.value);
+    monthlyRetirementIncome = parseInt(mri.value);
+    yearsToDeath = parseInt(ytd.value);
+    retirementAge = parseInt(ra.value);
+    inflationRate = parseFloat(ir.value);
+    currAge = parseInt(ca.value);
   }
 
-  function validateValues() {
+  function validateInflationVals() {
   return (
-  typeof(monthlyRetirementIncome) === "number" && monthlyRetirementIncome > 0 &&
-  typeof(yearsToDeath) === "number" && yearsToDeath > 0 &&
-  typeof(retirementAge) === "number" && retirementAge > 0 &&
-  typeof(inflationRate) === "number" && inflationRate > 0 &&
-  typeof(currAge) === "number" && currAge > 0
-  )
+    typeof(monthlyRetirementIncome) === "number" && monthlyRetirementIncome > 0 &&
+    typeof(yearsToDeath) === "number" && yearsToDeath > 0 &&
+    typeof(retirementAge) === "number" && retirementAge > 0 &&
+    typeof(inflationRate) === "number" && inflationRate > 0 &&
+    typeof(currAge) === "number" && currAge > 0
+  );
   }
 
   function numberWithCommas(x) {
-  x = Math.round(x);
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    x = Math.round(x);
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  function updateInflation() {
-  grabValues();
-  if (validateValues()) {
-  var yearsToRetirement = retirementAge - currAge;
-  monthlyResult = monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement);
-  mrr.textContent = numberWithCommas(monthlyResult);
-  totalResult = monthlyResult * MONTHS_IN_YEAR * yearsToDeath;
-  trr.textContent = numberWithCommas(totalResult);
-  }
+  function updateResults() {
+    grabValues();
+    grabValuesPortfolioVals();
+    if (validateInflationVals()) {
+      var yearsToRetirement = retirementAge - currAge;
+      monthlyResult = monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement);
+      mrr.textContent = numberWithCommas(monthlyResult);
+      totalResult = monthlyResult * MONTHS_IN_YEAR * yearsToDeath;
+      trr.textContent = numberWithCommas(totalResult);
+    }
+
+    if (validatePortfolioPercentages()) {
+      updateEndGoals();
+    } else {
+      tpr.textContent = 0;
+      mg.textContent = 0;
+      eg.textContent = 0;
+    }
   }
 
-  mri.onblur = updateInflation;
-  ytd.onblur = updateInflation;
-  ra.onblur = updateInflation;
-  ir.onblur = updateInflation;
-  ca.onblur = updateInflation;
+  function calculatePortfolioForAge() {
+    if (currAge <= 0 || typeof(currAge) !== "number") {
+      return;
+    }
+  
+    abfPercent = currAge;
+    stiPercent = (100 - currAge) / 2;
+    vwrdPercent = (100 - currAge) / 2;
+
+    abf.value = abfPercent;
+    sti.value = stiPercent;
+    vwrd.value = vwrdPercent;
+  }
+
+  function grabValuesPortfolioVals() {
+    baseAmount = parseInt(ba.value);
+    abfPercent = parseFloat(abf.value);
+    stiPercent = parseFloat(sti.value);
+    vwrdPercent = parseFloat(vwrd.value);
+  }
+
+  function validatePortfolioPercentages() {
+    var res = (
+      typeof(abfPercent) === "number" && abfPercent > 0 &&
+      typeof(stiPercent) === "number" && stiPercent > 0 &&
+      typeof(vwrdPercent) === "number" && vwrdPercent > 0
+    );
+    if ((abfPercent + stiPercent + vwrdPercent) !== 100) {
+    } else {
+    }
+    return res && ((abfPercent + stiPercent + vwrdPercent) == 100);
+  }
+
+  function calculatePortfolioReturn() {
+    var weightedABF = abfPercent / 100 * ABF_RETURN;
+    var weightedSTI = stiPercent / 100 * STI_RETURN;
+    var weightedVWRD = vwrdPercent / 100 * VWRD_RETURN;
+    totalReturnRate = weightedABF + weightedSTI + weightedVWRD;
+    tpr.textContent = totalReturnRate;
+  }
+
+  function calculateEndGoals() {
+    if (typeof(totalResult) !== "number" || totalResult <= 0) {
+      console.log('not ready');
+      return;
+    }
+    var yearsToRetirement = retirementAge - currAge;
+    baseAmount = 1;
+    if (ba.value !== "" && parseInt(ba.value) > 0) {
+      baseAmount = parseInt(ba.value);
+    }
+    var v = (totalReturnRate / 100) / 12;
+    console.log(v);
+
+    var contrib = 200;
+    var bs, cs, res;
+    res = 0;
+    while (res < totalResult) {
+      bs = baseAmount * Math.pow((1 + v / MONTHS_IN_YEAR), yearsToRetirement * MONTHS_IN_YEAR);
+      cs = contrib * (Math.pow((1 + v / MONTHS_IN_YEAR), yearsToRetirement * MONTHS_IN_YEAR) - 1) / (v / MONTHS_IN_YEAR);
+      res = bs + cs;
+      contrib += 100;
+    }
+    console.log(res);
+    endGoal = res;
+    monthlyGoal = contrib;
+    mg.textContent = numberWithCommas(monthlyGoal);
+    eg.textContent = numberWithCommas(endGoal);
+  }
+
+  function updateEndGoals() {
+    calculatePortfolioReturn();
+    calculateEndGoals();
+  }
+
+  mri.onblur = updateResults;
+  ytd.onblur = updateResults;
+  ra.onblur = updateResults;
+  ir.onblur = updateResults;
+  // Current age, update portfolio
+  ca.onblur = function() {
+    updateResults();
+    calculatePortfolioForAge();
+    if (validatePortfolioPercentages()) {
+      calculatePortfolioReturn();
+    }
+  };
+
+  ba.onblur = updateResults;
+  abf.onblur = updateResults;
+  sti.onblur = updateResults;
+  vwrd.onblur = updateResults; 
 
 
   //}
