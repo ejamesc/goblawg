@@ -78,6 +78,136 @@
         <div class='small-3 columns'>
           <span class='postfix radius'>SGD saved up for retirement</span>
         </div>
+        <hr/>
+      </div>
+      <div class='row collapse'>
+        <div class='small-7 columns'>
+          <p>Assuming I want to start investing with</p>
+        </div>
+        <div class='small-3 columns'>
+          <input type='text' id='base-amount' placeholder='3000' /> 
+        </div>
+        <div class='small-2 columns'>
+          <span class='postfix radius'>SGD today</span>
+        </div>
+      </div>
+      <div class='row collapse'>
+        <div class='small-12 columns'>
+          <p>After reading the <a href='https://www.amazon.com/Investment-Answer-Daniel-C-Goldie/dp/B0096ET3S6'>Investment Answer</a>, I put my money in the following <strong>simple passive portfolio</strong>:</p>
+        </div>
+      </div>
+      <div class='green-background'>
+        <div class='row collapse'>
+          <div class='small-4 columns'>
+            <p><strong>ETF Name</strong></p>
+          </div>
+          <div class='small-4 columns'>
+            <p><strong>Percentage of Portfolio</strong></p>
+          </div>
+          <div class='small-4 columns'>
+            <p><strong>Historical Average Rate of Return</strong></p>
+          </div>
+        </div>
+        <div class='row collapse'>
+          <div class='small-3 columns'>
+            <p>ABF Singapore Bond Index ETF <span class='label success'>A35.SGX</span></p>
+          </div>
+          <div class='small-2 small-offset-1 columns'>
+            <input type='text' id='abf' /> 
+          </div>
+          <div class='small-1 columns'>
+            <span class='postfix radius'>%</span>
+          </div>
+          <div class='small-4 small-offset-1 columns'>
+            <p><a href='http://www.nikkoam.com.sg/etf/abf'>2.50%</a> since fund inception, Aug 2005<sup>1</sup></p>
+          </div>
+        </div>
+        <div class='row collapse'>
+          <div class='small-3 columns'>
+            <p>SPDR Straits Times Index ETF <span class='label success'>ES3.SGX</span></p>
+          </div>
+          <div class='small-2 small-offset-1 columns'>
+            <input type='text' id='sti' /> 
+          </div>
+          <div class='small-1 columns'>
+            <span class='postfix radius'>%</span>
+          </div>
+          <div class='small-4 small-offset-1 columns'>
+            <p><a href='http://www.spdrs.com.sg/etf/fund/fund_detail_STTF.html'>6.58%</a> since fund inception, Apr 2002<sup>1</sup></p>
+          </div>
+        </div>
+        <div class='row collapse'>
+          <div class='small-3 columns'>
+            <p>Vanguard FTSE All-World UCITS ETF (USD) <span class='label success'>VWRD.LSE</span></p>
+          </div>
+          <div class='small-2 small-offset-1 columns'>
+            <input type='text' id='vwrd' /> 
+          </div>
+          <div class='small-1 columns'>
+            <span class='postfix radius'>%</span>
+          </div>
+          <div class='small-4 small-offset-1 columns'>
+            <p><a href='https://www.vanguard.co.uk/adviser/adv/loadPDF?country=uk&docId=1011'>9.42%</a> since fund inception, May 2012<sup>1</sup></p>
+          </div>
+        </div>
+        <div class='row collapse'>
+          <div class='small-3 columns'>
+            <p>Total Average Portfolio Return<sup>1</sup>:</p>
+          </div>
+          <div class='small-2 small-offset-1 columns'>
+            <h3 id='total-portfolio-return'>0</h3>
+          </div>
+          <div class='small-1 columns'>
+            <h3>%</h3>
+          </div>
+          <div class='small-4 small-offset-1 columns'>
+            <p><small><sup>1</sup><em>Obviously</em>, past performance is not an indicator of future performance.</small></p>
+          </div>
+        </div>
+      </div><!-- green-background -->
+      <br/>
+      <div class='row collapse'>
+        <div class='small-4 columns'>
+          <p>This means you will need to invest:</p>
+        </div>
+        <div class='small-2 columns'>
+          <h3 id='monthly-goal'>0</h3>
+        </div>
+        <div class='small-2 columns'>
+          <span class='postfix radius'>SGD per month</span>
+        </div>
+        <div class='small-3 small-offset-1 columns'>
+          <p>to achieve your goal.</p>
+        </div>
+      </div>
+      <div class='row collapse'>
+        <div class='small-4 columns'>
+          <p>You will end up with:</p>
+        </div>
+        <div class='small-2 columns'>
+          <h3 id='end-goal'>0</h3>
+        </div>
+        <div class='small-2 columns'>
+          <span class='postfix radius'>SGD</span>
+        </div>
+        <div class='small-3 small-offset-1 columns'>
+          <p>for retirement. =]</p>
+        </div>
+      </div>
+      <hr/>
+      <div class='row collapse'>
+        <div class='small-12 columns'>
+          <h3>Notes</h3>
+          <p>You shouldn't <em>only</em> look at the average rates of return. Think about your risk profile, and what kind of risks you are willing to be exposed to. Buying more VWRD, for instance, leaves you open to global market risk <em>as well as currency risk of the USD</em>. You want to think about the percentage of your exposure to those risks.</p>
+          <p>This passive portfolio assumes you understand the ideas presented in The Investment Answer (aka passive investing). In order for this to work you will need to: </p>
+          <ul>
+            <li>Rebalance your stock portfolio at least once a year, such that each component returns to the starting percentages. You do this by selling off the ones that do particularly well, or buying more of the ones that are doing poorly, until the $ value of each returns to the starting % of your overall portfolio.</li>
+            <li>Put in money at a certain interval (e.g. every quarter), rain or shine, stock market crash or bull rush.</li>
+            <li>You do this for a very long time, e.g. 3 decades or more.</li>
+          </ul>
+        <p>This isn't professional financial advice. See the title of this page? It has 'stupid' in it for a reason! I wrote this to help me calculate my goals. I hope it helps you with yours!</p>
+        <p><em>PS: This doesn't take into account CPF. CPF is a huge part of retirement planning, and may impact the above calculations. Some Singaporean investors regard CPF as the bond component of their portfolio, and so reduce the % of the bonds component, above. Caveat emptor.</em></p>
+        </div>
       </div>
 
       {{ template "footer" . }}
@@ -87,65 +217,60 @@
 <script>
   const MONTHS_IN_YEAR = 12;
   //window.onload = function() {
-    var monthlyRetirementIncome, yearsToDeath, retirementAge, inflationRate, currAge, monthlyResult, totalResult;
-    var mri, ytd, ra, ir, ca, mrr, trr;
+  var monthlyRetirementIncome, yearsToDeath, retirementAge, inflationRate, currAge, monthlyResult, totalResult;
+  var mri, ytd, ra, ir, ca, mrr, trr;
 
-    mri = document.querySelector('#monthly-retirement-income');
-    ytd = document.querySelector('#years-to-death');
-    ra = document.querySelector('#retirement-age');
-    ir = document.querySelector('#inflation-rate');
-    ca = document.querySelector('#curr-age');
+  mri = document.querySelector('#monthly-retirement-income');
+  ytd = document.querySelector('#years-to-death');
+  ra = document.querySelector('#retirement-age');
+  ir = document.querySelector('#inflation-rate');
+  ca = document.querySelector('#curr-age');
 
-    // Results
-    mrr = document.querySelector("#inflation-adjusted-monthly");
-    trr = document.querySelector("#inflation-adjusted-total");
+  // Results
+  mrr = document.querySelector("#inflation-adjusted-monthly");
+  trr = document.querySelector("#inflation-adjusted-total");
 
-    function grabValues() {
-      monthlyRetirementIncome = parseInt(mri.value);
-      console.log(monthlyRetirementIncome);
-      yearsToDeath = parseInt(ytd.value);
-      console.log(yearsToDeath);
-      retirementAge = parseInt(ra.value);
-      console.log(retirementAge);
-      inflationRate = parseInt(ir.value);
-      console.log(inflationRate);
-      currAge = parseInt(ca.value);
-      console.log(currAge);
-    }
+  function grabValues() {
+  monthlyRetirementIncome = parseInt(mri.value);
+  yearsToDeath = parseInt(ytd.value);
+  retirementAge = parseInt(ra.value);
+  inflationRate = parseInt(ir.value);
+  currAge = parseInt(ca.value);
+  }
 
-    function validateValues() {
-      return (
-      typeof(monthlyRetirementIncome) === "number" && monthlyRetirementIncome > 0 &&
-      typeof(yearsToDeath) === "number" && yearsToDeath > 0 &&
-      typeof(retirementAge) === "number" && retirementAge > 0 &&
-      typeof(inflationRate) === "number" && inflationRate > 0 &&
-      typeof(currAge) === "number" && currAge > 0
-      )
-    }
+  function validateValues() {
+  return (
+  typeof(monthlyRetirementIncome) === "number" && monthlyRetirementIncome > 0 &&
+  typeof(yearsToDeath) === "number" && yearsToDeath > 0 &&
+  typeof(retirementAge) === "number" && retirementAge > 0 &&
+  typeof(inflationRate) === "number" && inflationRate > 0 &&
+  typeof(currAge) === "number" && currAge > 0
+  )
+  }
 
-    function numberWithCommas(x) {
-      x = Math.round(x);
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+  function numberWithCommas(x) {
+  x = Math.round(x);
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
-    function updateInflation() {
-      grabValues();
-      if (validateValues()) {
-        var yearsToRetirement = retirementAge - currAge;
-        monthlyResult = monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement);
-        mrr.textContent = numberWithCommas(monthlyResult);
-        totalResult = monthlyResult * MONTHS_IN_YEAR * yearsToDeath;
-        trr.textContent = numberWithCommas(totalResult);
-      }
-    }
+  function updateInflation() {
+  grabValues();
+  if (validateValues()) {
+  var yearsToRetirement = retirementAge - currAge;
+  monthlyResult = monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement);
+  mrr.textContent = numberWithCommas(monthlyResult);
+  totalResult = monthlyResult * MONTHS_IN_YEAR * yearsToDeath;
+  trr.textContent = numberWithCommas(totalResult);
+  }
+  }
 
-    mri.onblur = updateInflation;
-    ytd.onblur = updateInflation;
-    ra.onblur = updateInflation;
-    ir.onblur = updateInflation;
-    ca.onblur = updateInflation;
+  mri.onblur = updateInflation;
+  ytd.onblur = updateInflation;
+  ra.onblur = updateInflation;
+  ir.onblur = updateInflation;
+  ca.onblur = updateInflation;
 
-    
+
   //}
 </script>
 </html>
