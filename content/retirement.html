@@ -60,7 +60,7 @@
     </div>
     <div class='row collapse'>
       <div class='small-7 columns'>
-        <p>Then what I <em>really</em> need is</p>
+        <p>Then what I <em>really</em> need is around<sup>1</sup></p>
       </div>
       <div class='small-2 columns'>
         <h3 id="inflation-adjusted-monthly">0</h3>
@@ -70,7 +70,7 @@
       </div>
       <div class='row collapse'>
         <div class='small-7 columns'>
-          <p>Which means I need to have</p>
+          <p>And what I need to have is</p>
         </div>
         <div class='small-2 columns'>
           <h3 id="inflation-adjusted-total">0</h3>
@@ -119,7 +119,7 @@
             <span class='postfix radius'>%</span>
           </div>
           <div class='small-4 small-offset-1 columns'>
-            <p><a href='http://www.nikkoam.com.sg/etf/abf'>2.50%</a> since fund inception, Aug 2005<sup>1</sup></p>
+            <p><a href='http://www.nikkoam.com.sg/etf/abf'>2.50%</a> since fund inception, Aug 2005<sup>2</sup></p>
           </div>
         </div>
         <div class='row collapse'>
@@ -133,7 +133,7 @@
             <span class='postfix radius'>%</span>
           </div>
           <div class='small-4 small-offset-1 columns'>
-            <p><a href='http://www.spdrs.com.sg/etf/fund/fund_detail_STTF.html'>6.58%</a> since fund inception, Apr 2002<sup>1</sup></p>
+            <p><a href='http://www.spdrs.com.sg/etf/fund/fund_detail_STTF.html'>6.58%</a> since fund inception, Apr 2002<sup>2</sup></p>
           </div>
         </div>
         <div class='row collapse'>
@@ -147,12 +147,12 @@
             <span class='postfix radius'>%</span>
           </div>
           <div class='small-4 small-offset-1 columns'>
-            <p><a href='https://www.vanguard.co.uk/adviser/adv/loadPDF?country=uk&docId=1011'>9.42%</a> since fund inception, May 2012<sup>1</sup></p>
+            <p><a href='https://www.vanguard.co.uk/adviser/adv/loadPDF?country=uk&docId=1011'>9.42%</a> since fund inception, May 2012<sup>2</sup></p>
           </div>
         </div>
         <div class='row collapse'>
           <div class='small-3 columns'>
-            <p>Total Portfolio Annual Return<sup>1</sup>:</p>
+            <p>Total Portfolio Annual Return<sup>2</sup>:</p>
           </div>
           <div class='small-2 small-offset-1 columns'>
             <h3 id='total-portfolio-return'>0</h3>
@@ -161,7 +161,7 @@
             <h3>%</h3>
           </div>
           <div class='small-4 small-offset-1 columns'>
-            <p><small><sup>1</sup><em>Obviously</em>, past performance is not an indicator of future returns.</small></p>
+            <p><small><sup>2</sup><em>Obviously</em>, past performance is not an indicator of future returns.</small></p>
           </div>
         </div>
       </div><!-- green-background -->
@@ -198,7 +198,7 @@
       <div class='row collapse'>
         <div class='small-12 columns'>
           <h3>Notes</h3>
-          <p>This portfolio shouldn't be the entirety of your retirement strategy. However, it's a simple starting point! If you're Singaporean, your CPF and any real estate you own will also contribute to your retirement planning. You may also supplement this ETF-based strategy with other instruments.</p>
+          <p>This portfolio shouldn't be the entirety of a retirement strategy. However, it's a simple starting point! If you're Singaporean, your CPF and any real estate you own will also contribute to your retirement planning. You may also supplement this ETF-based strategy with other instruments.</p>
           <p>You shouldn't <em>only</em> look at the average rates of return. The Investment Answer urges you to think about your risk profile, and what kind of risks you are willing to be exposed to. Buying more VWRD, for instance, leaves you open to global market risk <em>as well as currency risk</em> of the USD.</p>
           <p>This passive portfolio assumes you understand the ideas presented in The <a href='https://www.amazon.com/Investment-Answer-Daniel-C-Goldie/dp/B0096ET3S6'>Investment Answer</a> (aka passive investing). In order for this to work you will need to: </p>
           <ul>
@@ -208,6 +208,8 @@
           </ul>
         <p>This isn't professional financial advice. See the title of this page? It has 'stupid' in it for a reason! I wrote this to help me calculate my goals. I hope it helps you with yours!</p>
         <p><em>PS: I repeat, this doesn't take into account CPF. Some Singaporean investors regard CPF as the bond component of their portfolio, and so reduce the % of the bonds component, above. Caveat emptor.</em></p>
+        <hr/>
+        <p><sup>1</sup> What is this 'around' thing? Well, the inflation calculator sums up inflation as applied to your monthly retirement income goal for each year you plan to be retired. So if you intend to draw $2000 for 15 years at a 3% inflation rate, say, and your retirement age is 30 years from now, then in your first year the monthly income after inflation is $4854.52, and in your second year you will need $5000.16 per month after inflation, and so on. We take the average of this to present the monthly sum.</p>
         </div>
       </div>
 
@@ -274,9 +276,13 @@
     grabValuesPortfolioVals();
     if (validateInflationVals()) {
       var yearsToRetirement = retirementAge - currAge;
-      monthlyResult = monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement);
+      totalResult = 0;
+      for (var i = 0; i < yearsToDeath; i++) {
+        totalResult += (monthlyRetirementIncome * Math.pow(1 + inflationRate / 100, yearsToRetirement)) * MONTHS_IN_YEAR;
+        yearsToRetirement += 1;
+      }
+      monthlyResult = totalResult / yearsToDeath / MONTHS_IN_YEAR;
       mrr.textContent = numberWithCommas(monthlyResult);
-      totalResult = monthlyResult * MONTHS_IN_YEAR * yearsToDeath;
       trr.textContent = numberWithCommas(totalResult);
     }
 
@@ -316,9 +322,7 @@
       typeof(stiPercent) === "number" && stiPercent > 0 &&
       typeof(vwrdPercent) === "number" && vwrdPercent > 0
     );
-    if ((abfPercent + stiPercent + vwrdPercent) !== 100) {
-    } else {
-    }
+
     return res && ((abfPercent + stiPercent + vwrdPercent) == 100);
   }
 
@@ -332,7 +336,6 @@
 
   function calculateEndGoals() {
     if (typeof(totalResult) !== "number" || totalResult <= 0) {
-      console.log('not ready');
       return;
     }
     var yearsToRetirement = retirementAge - currAge;
@@ -341,7 +344,6 @@
       baseAmount = parseInt(ba.value);
     }
     var v = (totalReturnRate / 100) / 12;
-    console.log(v);
 
     var bs = baseAmount * Math.pow((1 + totalReturnRate/100), yearsToRetirement);
     var cs = (Math.pow((1 + totalReturnRate/100), yearsToRetirement) - 1) / (totalReturnRate/100); 
